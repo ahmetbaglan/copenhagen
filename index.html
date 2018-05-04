@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="utf-8">
-    <title>Social Data &amp; Visualizations Project</title>
-    <script type="text/javascript" src="d3.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
+<head>
+  <meta charset="utf-8">
+  <title>Social Data &amp; Visualizations Project</title>
+  <script type="text/javascript" src="d3.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
 
-  <body>
-    <div class="header">
-      <h1>Copenhagen in Demographics &amp; Politics</h1>
-      <i>An investigation in the demographics of the different districts of Copenhagen and their respective voting behaviour
+<body>
+  <div class="header">
+    <h1>Copenhagen in Demographics &amp; Politics</h1>
+    <i>An investigation in the demographics of the different districts of Copenhagen and their respective voting behaviour
       in the last 10 years.</i>
-      <strong class="date">14th of May, 2018</strong>
-    </div>
-    <div class="container">
-      <div class="map"></div>
-    </div>
+    <strong class="date">14th of May, 2018</strong>
+  </div>
+  <div class="container">
+    <div class="map"></div>
+  </div>
 
 
-    <script type="text/javascript">
+  <script type="text/javascript">
     var w = 1000,
       h = 1000;
 
@@ -36,33 +36,47 @@
       .attr('width', w)
       .attr('height', h);
 
-    d3.json("copenhagen.geojson", function(json) {
+    d3.json("data/copenhagen.geojson", function(json) {
       console.log(json);
       var center = d3.geoCentroid(json)
-      var scale = 80000;
+      var scale = 150;
       var offset = [w / 2, h / 2];
       var projection = d3.geoMercator()
-        .center(center)
         .translate(offset)
         .scale([scale]);
 
       console.log(center);
+      // Compute initial path
       var path = d3.geoPath().projection(projection)
+
+      // using the path determine the bounds of the current map and use
+      // these to determine better values for the scale and translation
+      var bounds = path.bounds(json);
+      var hscale = scale * w / (bounds[1][0] - bounds[0][0]);
+      var vscale = scale * h / (bounds[1][1] - bounds[0][1]);
+      var scale = (hscale < vscale) ? hscale : vscale;
+      var offset = [w - (bounds[0][0] + bounds[1][0]) / 2,
+        h - (bounds[0][1] + bounds[1][1]) / 2
+      ];
+
+      // new projection
+      projection = d3.geoMercator().center(center)
+        .scale(scale).translate(offset);
+      path = path.projection(projection);
 
       //Bind data and create one path per GeoJSON feature
       var paths = svg.selectAll("path")
-        .data(json)
+        .data(json.features)
         .enter()
         .append("path")
         .attr("d", path)
         .style("fill", 'red');
 
-        console.log(paths);
+      console.log(paths);
 
     });
+  </script>
 
-    </script>
-
-  </body>
+</body>
 
 </html>
