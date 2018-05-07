@@ -56,6 +56,8 @@ var setColorDomain = function () {
 
   if (min < 0) {
     thresholdScale.range(colorsDiverging);
+  } else {
+    thresholdScale.range(colors);
   }
   if ((parseFloat(min) + parseFloat(max)) < 1) {
     console.log('removing legend');
