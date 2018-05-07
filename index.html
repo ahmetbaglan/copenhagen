@@ -19,21 +19,40 @@
   </div>
   <div class="container">
     <p class="button-row">
-      <p>
-        Select demographic
-      </p>
-      <p>
-        <select onchange="update(this)" class="btn btn-lg btn-default metric">
-          <option selected value="no_inhabitants">Number of inhabitants</option>
-          <option value="avg_income">Average income</option>
-          <option value="avg_age">Average age</option>
-          <option value="no_apartments">Number of apartments</option>
-          <option value="no_companies">Number of companies</option>
-        </select>
-        <button class="btn btn-default">Update</button>
-      </p>
-
+      <div class="col-md-4">
+        <p>
+          Select a metric to explore
+        </p>
+        <p>
+          <select onchange="update(this)" class="btn btn-default metric">
+            <option selected value="no_inhabitants">Number of inhabitants</option>
+            <option value="avg_income">Average income (DKK/y)</option>
+            <option value="avg_age">Average age</option>
+            <option value="no_apartments">Number of apartments</option>
+            <option value="no_companies">Number of companies</option>
+            <option value="no_netto_movings">Number of movings</option>
+          </select>
+        </p>
     </p>
+    </div>
+    <div class="col-md-8">
+      <p>
+        Select a year
+      </p>
+      <div class="slidecontainer">
+        <input onchange="updateYear(this)" type="range" list="tickmarks" min="2008" max="2014" value="2008" class="slider" id="years">
+        <datalist class="slider-ticks" id="tickmarks">
+          <option value="2008" label="2008">
+          <option value="2009" label="2009">
+          <option value="2010" label="2010">
+          <option value="2011" label="2011">
+          <option value="2012" label="2012">
+          <option value="2013" label="2013">
+          <option value="2014" label="2014">
+        </datalist>
+      </div>
+    </div>
+
     <div class="map"></div>
   </div>
 
@@ -41,10 +60,17 @@
   <script type="text/javascript" src="scripts/map.js">
   </script>
   <script type "text/javascript">
-    console.log('loading js');
     var update = function(obj) {
       setMetric(obj.value);
-      console.log('upodating for', metric);
+      filterData()
+      setColorDomain();
+      drawMap();
+    }
+
+    var updateYear = function(obj) {
+      console.log('updating the year');
+      setYear(obj.value);
+      filterData()
       setColorDomain();
       drawMap();
     }

@@ -4,7 +4,8 @@ var w = 1000,
   metric = 'no_inhabitants',
   year = '2008',
   colors = ['#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b'],
-  path, paths, districts, json, dataset;
+  colorsDiverging = ['#c2a5cf', '#e7d4e8', '#f7f7f7', '#d9f0d3', '#a6dba0', '#5aae61', '#1b7837'],
+  path, paths, districts, json, dataset, data;
 
 // helper to get correct value from data set
 var getColorValue = function (d) {
@@ -13,9 +14,15 @@ var getColorValue = function (d) {
   });
   return parseInt(row[metric]);
 }
+
 // helper to set the metric here through action in html in other file
 var setMetric = function (value) {
   metric = value;
+}
+
+// helper to set the metric here through action in html in other file
+var setYear = function (value) {
+  year = value;
 }
 
 // threshold scale
@@ -33,33 +40,68 @@ var setColorDomain = function () {
 
   // min / max values
   var min = dataset.reduce(function (prev, curr) {
-    return prev[metric] < curr[metric] ? prev : curr;
+    return parseInt(prev[metric]) < parseInt(curr[metric]) ? prev : curr;
   })[metric];
 
   var max = dataset.reduce(function (prev, curr) {
-    return prev[metric] > curr[metric] ? prev : curr;
+    return parseInt(prev[metric]) > parseInt(curr[metric]) ? prev : curr;
   })[metric];
 
   console.log('min:', min, 'max:', max);
   // divide up the domain and update scale
   var l = (max - min) / thresholdScale.range().length,
     breaks = d3.range(0, thresholdScale.range().length).map(function (i) {
-      return parseInt(min) + Math.round(i * l);
+      return parseInt(min) + i * l;
     });
-  thresholdScale.domain(breaks)
 
-  // append legend
-  svg.append("g")
-    .attr("class", "legendQuant")
-    .attr("transform", "translate(20,20)");
+  if (min < 0) {
+    thresholdScale.range(colorsDiverging);
+  }
+  if ((parseFloat(min) + parseFloat(max)) < 1) {
+    console.log('removing legend');
+    // remove legend
+    svg.select(".legendQuant").remove()
+    svg.append("g")
+      .attr("class", "noData")
+      .attr("transform", "translate(20,20)");
+    svg.select(".noData")
+      .append('text')
+      .text('No data to display.')
 
-  var legend = d3.legendColor()
-    .labelFormat(d3.format(".0f"))
-    .labels(d3.legendHelpers.thresholdLabels)
-    .scale(thresholdScale)
+  } else {
+    console.log('not removing legend');
+    svg.select(".noData").remove()
+    thresholdScale.domain(breaks)
 
-  svg.select(".legendQuant")
-    .call(legend);
+    var format = metric.indexOf('avg') > -1 ? '.2f' : '.0f';
+    // append legend
+    svg.append("g")
+      .attr("class", "legendQuant")
+      .attr("transform", "translate(20,20)");
+
+    var legend = d3.legendColor()
+      .labelFormat(d3.format(format))
+      .labels(d3.legendHelpers.thresholdLabels)
+      .scale(thresholdScale)
+
+    svg.select(".legendQuant")
+      .call(legend);
+  }
+
+
+}
+
+var click = function (d) {
+  console.log(d);
+}
+
+// filter dataset per years
+var filterData = function () {
+  console.log('year', year);
+  dataset = data.filter(function (row) {
+    return row['aar'] === year;
+  });
+  console.log('filterted dataset', dataset);
 }
 
 
@@ -79,18 +121,30 @@ var drawMap = function () {
     .enter()
     .append("path")
     .attr("d", path)
+    .attr('class', 'district')
     .style("fill", function (d) {
       return thresholdScale(getColorValue(d));
-    });
+    })
+    .on('mouseover', function (d, i) {
+      var currentState = this;
+      d3.select(this)
+        .style('fill-opacity', 1)
+        .style("cursor", "pointer");
+    })
+    .on('mouseout', function (d, i) {
+      d3.select(this)
+        .style('fill-opacity', 0.8)
+        .style("cursor", "default");
+    })
+    .on('click', click);
 
   // Add names to the districts
-  districts = svg.selectAll('text')
+  districts = svg.selectAll('text district-names')
     .data(json.features)
     .enter()
     .append("text")
+    .attr('class', 'district-names')
     .text(function (d) {
-      // TODO: not displaying all names
-      console.log(d.properties.navn);
       return d.properties.navn;
     })
     .attr("x", function (d) {
@@ -125,8 +179,11 @@ d3.json("data/copenhagen.geojson", function (geodata) {
     if (err) {
       console.log('errr loading data', err);
     }
-    console.log(demodata['avg_income']);
-    dataset = demodata;
+    // set original dataset as global var
+    data = demodata;
+
+    // filter the data for current year and use for the visualizations
+    filterData()
     setColorDomain();
     drawMap();
 
