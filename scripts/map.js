@@ -20,6 +20,11 @@ var setMetric = function (value) {
   metric = value;
 }
 
+var getMetric = function()
+{
+  return metric;
+}
+
 // helper to set the metric here through action in html in other file
 var setYear = function (value) {
   year = value;
