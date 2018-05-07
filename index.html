@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <title>Social Data &amp; Visualizations Project</title>
   <script type="text/javascript" src="d3.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
@@ -12,8 +13,8 @@
 <body>
   <div class="header">
     <h1>Copenhagen in Demographics &amp; Politics</h1>
-    <i>An investigation in the demographics of the different districts of Copenhagen and their respective voting behaviour
-      in the last 10 years.</i>
+    <i>An investigation into the demographics of the different districts of Copenhagen and their respective voting behaviour
+      over the last 10 years.</i>
     <strong class="date">14th of May, 2018</strong>
   </div>
   <div class="container">
@@ -22,11 +23,12 @@
         Select demographic
       </p>
       <p>
-        <select class="btn btn-lg btn-default metric">
-          <option selected value="inhabitants">Inhabitants</option>
-          <option value="income">Majority income group</option>
-          <option value="age">Majority age group</option>
-          <option value="apts">Apartments</option>
+        <select onchange="update(this)" class="btn btn-lg btn-default metric">
+          <option selected value="no_inhabitants">Number of inhabitants</option>
+          <option value="avg_income">Average income</option>
+          <option value="avg_age">Average age</option>
+          <option value="no_apartments">Number of apartments</option>
+          <option value="no_companies">Number of companies</option>
         </select>
         <button class="btn btn-default">Update</button>
       </p>
@@ -36,7 +38,17 @@
   </div>
 
 
-  <script type="text/javascript" src="scripts/map.js"></script>
+  <script type="text/javascript" src="scripts/map.js">
+  </script>
+  <script type "text/javascript">
+    console.log('loading js');
+    var update = function(obj) {
+      setMetric(obj.value);
+      console.log('upodating for', metric);
+      setColorDomain();
+      drawMap();
+    }
+  </script>
 
 </body>
 
