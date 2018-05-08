@@ -63,6 +63,9 @@
           <span id="percentage"></span><br/>
         </div>
       </div>
+      <div id = "barChart">
+
+      </div>
     </div>
   </div>
 
@@ -70,51 +73,33 @@
   <script type="text/javascript" src="scripts/map.js">
   </script>
   <script type "text/javascript">
+
+
+  // showCoolPie(2008, colorsPie, 'no_inhabitantsDistribution.csv')
     var update = function(obj) {
+      d3.select("#pieSVG").remove()
+      d3.select("#barSVG").remove()
+
       setMetric(obj.value);
       filterData()
       setColorDomain();
       drawMap();
+      updateCoolPieChart(getYear(), getMetric())
+
     }
 
     var updateYear = function(obj) {
+      d3.select("#pieSVG").remove()
+      d3.select("#barSVG").remove()
       console.log('updating the year');
       setYear(obj.value);
       filterData()
       setColorDomain();
       drawMap();
-
-
-      var met = getMetric();
-      console.log(met + 'yooo')
-      if (met == "no_inhabitants") {
-        var colors = {
-          "couple": "#5687d1",
-          "other": "#7b615c",
-          "single": "#de783b",
-          "Without Kids": "#6ab975",
-          "With Kids": "#a173d1",
-          "amager_vest": "#93707E",
-          "bispebjerg": "#8E94F2",
-          "brønshøj husum": "#ADFFC9"
-        };
-        showCoolPie(+obj.value, colors, 'no_inhabitantsDistribution.csv')
-      } else if (met == "no_inhabitants") {
-        var colors = {
-          "couple": "#5687d1",
-          "other": "#7b615c",
-          "single": "#de783b",
-          "Without Kids": "#6ab975",
-          "With Kids": "#a173d1",
-          "amager_vest": "#93707E",
-          "bispebjerg": "#8E94F2",
-          "brønshøj husum": "#ADFFC9"
-        };
-
-
-      }
-
+      updateCoolPieChart(getYear(),getMetric())
     }
+
+
   </script>
 
 </body>

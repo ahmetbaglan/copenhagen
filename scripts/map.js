@@ -30,6 +30,11 @@ var setYear = function (value) {
   year = value;
 }
 
+var getYear = function()
+{
+  return +year;
+}
+
 // threshold scale
 var thresholdScale = d3.scaleThreshold()
   .range(colors);
