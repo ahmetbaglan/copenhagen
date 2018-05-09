@@ -1,12 +1,5 @@
-var nodesLol;
-var dataLol;
-var barChartYScale;
-var barChartXScale;
-var svgBar;
-var barMargin ={top: 20, right: 20, bottom: 30, left: 40};
-var widthBar = 500 - barMargin.left - barMargin.right;
-var heightBar = 300 - barMargin.top - barMargin.bottom;
 
+// var mainDiv = "#main"
 var updateCoolPieChart = function(year, met)
 {
   if (met == "no_inhabitants") {
@@ -20,7 +13,7 @@ var updateCoolPieChart = function(year, met)
       "bispebjerg": "#8E94F2",
       "brønshøj husum": "#ADFFC9"
     };
-    showCoolPie(year, colors, 'no_inhabitantsDistribution.csv')
+    showCoolPie(year, colors, 'no_inhabitantsDistribution.csv',"#main")
   } else if (met == "avg_age") {
 
     var colors = {
@@ -33,7 +26,7 @@ var updateCoolPieChart = function(year, met)
       "bispebjerg": "#8E94F2",
       "brønshøj husum": "#ADFFC9"
     };
-    showCoolPie(year, colors, 'no_ageDistribution.csv')
+    showCoolPie(year, colors, 'no_ageDistribution.csv',"#main")
   }
   else if (met == "no_apartments") {
 
@@ -47,7 +40,7 @@ var updateCoolPieChart = function(year, met)
       "bispebjerg": "#8E94F2",
       "brønshøj husum": "#ADFFC9"
     };
-    showCoolPie(year, colors, 'no_apartmentsDistribution.csv')
+    showCoolPie(year, colors, 'no_apartmentsDistribution.csv',"#main")
 
   }
   else if (met == "avg_income") {
@@ -62,15 +55,22 @@ var updateCoolPieChart = function(year, met)
       "bispebjerg": "#8E94F2",
       "brønshøj husum": "#ADFFC9"
     };
-    showCoolPie(year, colors, 'avg_incomeDistribution.csv')
-
+    showCoolPie(year, colors, 'avg_incomeDistribution.csv', "#main")
+    showCoolPie(year, colors, 'avg_incomeDistribution.csv', "#main2")
   }
 
 }
 
-var showCoolPie = function (year, colors, dataName) {
-
-  // de.select("#barChart").selectAll("svg").remove()
+var showCoolPie = function (year, colors, dataName, mainDiv) {
+  var nodesLol;
+  var dataLol;
+  var barChartYScale;
+  var barChartXScale;
+  var svgBar;
+  var barMargin ={top: 20, right: 20, bottom: 30, left: 40};
+  var widthBar = 500 - barMargin.left - barMargin.right;
+  var heightBar = 300 - barMargin.top - barMargin.bottom;
+  // de.("#barChart").selectAll("svg").remove()
   // Dimensions of sunburst.
   var width = 750;
   var height = 600;
@@ -88,12 +88,12 @@ var showCoolPie = function (year, colors, dataName) {
   // Total size of all segments; we set this later, after loading the data.
   var totalSize = 0;
 
-  var vis = d3.select("#chart").append("svg:svg")
-    .attr("id","pieSVG")
+  var vis = d3.select(mainDiv).select(".chart").append("svg:svg")
+    .attr("class","pieSVG")
     .attr("width", width)
     .attr("height", height)
     .append("svg:g")
-    .attr("id", "container")
+    .attr("class", "container")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
   var partition = d3.partition()
@@ -113,6 +113,117 @@ var showCoolPie = function (year, colors, dataName) {
       return Math.sqrt(d.y1);
     });
 
+    getStringFromNode = function(node)
+    {
+      if(node.depth == 0)
+      {
+        return "";
+      }
+      else if (node.parent.data.name == "root") {
+        return node.data.name;
+      }
+      var newNode = node.parent;
+      var totalString  =  node.data.name;
+      while(newNode.data.name!='root')
+      {
+        totalString = newNode.data.name + "-" +totalString;
+        newNode = newNode.parent;
+      }
+      return totalString;
+    }
+
+    showHistoryData = function(stringText,data)
+    {
+       var filtered = data.filter(function(d){return d.depthInfo.startsWith(stringText);})
+       var byYearSum = d3.nest().key(function(d){return d.year})
+                                .rollup(function(v){return{year:Math.round(d3.mean(v,function(d){return +d.year})), sum: d3.sum(v,function(d){return +d.val})}})
+                                .entries(filtered);
+       var i;
+       var out = []
+       for(i=0; i<byYearSum.length;i++)
+       {
+        out.push(byYearSum[i].value)
+       }
+       return out;
+    }
+
+    var createBarChart = function(data)
+    {
+
+      // set the dimensions and margins of the graph
+    var margin = barMargin;
+
+    var width = widthBar;
+    var height = heightBar;
+
+    // set the ranges
+     barChartXScale = d3.scaleBand()
+              .range([0, width])
+              .padding(0.2);
+
+     barChartYScale = d3.scaleLinear()
+              .range([height, 0]);
+
+    // append the svg object to the body of the page
+    // append a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+     svgBar = d3.select(mainDiv).select(".barChart").append("svg")
+        .attr("class", "barSVG")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+      var minYear  = d3.min(data, function(d) { return d.year; });
+      var maxYear = d3.max(data, function(d) { return d.year; });
+      // Scale the range of the data in the domains
+      barChartXScale.domain(d3.ticks(minYear,maxYear,maxYear-minYear + 1));
+      barChartYScale.domain([0, d3.max(data, function(d) { return d.sum; })]);
+
+      // append the rectangles for the bar chart
+      svgBar.selectAll("rect")
+          .data(data)
+        .enter().append("rect")
+          .attr("x", function(d) { return barChartXScale(d.year); })
+          .attr("width", barChartXScale.bandwidth())
+          .attr("y", function(d) { return barChartYScale(d.sum); });
+
+      // add the x Axis
+      svgBar.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .attr("class", "x axis")
+          .call(d3.axisBottom(barChartXScale));
+
+      // add the y Axis
+      svgBar.append("g")
+          .attr("class", "y axis")
+          .call(d3.axisLeft(barChartYScale));
+    }
+
+
+    var updateBarChart = function(data, colorVal)
+    {
+      var height = heightBar;
+      var width = widthBar;
+
+      barChartYScale.domain([0, d3.max(data, function(d) { return d.sum; })]);
+
+      svgBar.select(".y.axis")
+         .transition()
+         .duration(1000)
+         .call(d3.axisLeft(barChartYScale));
+
+      svgBar.selectAll("rect")
+         .data(data)
+         .transition()
+         .duration(1000)
+         .attr("x", function(d) { return barChartXScale(d.year); })
+         .attr("y", function(d) { console.log(barChartYScale(d.sum)); return barChartYScale(d.sum); })
+         .attr("height", function(d) { return height - barChartYScale(d.sum); })
+         .style("fill", colorVal);
+
+    }
   // Use d3.text and d3.csvParseRows so that we do not need to have a header
   // row, and can receive the csv as an array of arrays.
   d3.text(dataName, function (text) {
@@ -138,7 +249,7 @@ var showCoolPie = function (year, colors, dataName) {
     // Basic setup of page elements.
     initializeBreadcrumbTrail();
     drawLegend();
-    d3.select("#togglelegend").on("click", toggleLegend);
+    d3.select(mainDiv).select("#togglelegend").on("click", toggleLegend);
     // Bounding circle underneath the sunburst, to make it easier to detect
     // when the mouse leaves the parent g.
     vis.append("svg:circle")
@@ -176,7 +287,7 @@ var showCoolPie = function (year, colors, dataName) {
       .on("click", function(d){var data = showHistoryData(getStringFromNode(d), wholeData); updateBarChart(data, colors[d.data.name])});
       console.log(json)
     // Add the mouseleave handler to the bounding circle.
-    d3.select("#container").on("mouseleave", mouseleave);
+    d3.select(mainDiv).select(".container").on("mouseleave", mouseleave);
 
     // Get total size of the tree = value of root node from partition.
     totalSize = path.datum().value;
@@ -190,17 +301,17 @@ var showCoolPie = function (year, colors, dataName) {
 
   // Fade all but the current sequence, and show it in the breadcrumb trail.
   function mouseover(d) {
-
+    console.log("ooooooooooooooooooooooooooooooooooooooooooo")
     var percentage = (100 * d.value / totalSize).toPrecision(3);
     var percentageString = percentage + "%";
     if (percentage < 0.1) {
       percentageString = "< 0.1%";
     }
 
-    d3.select("#percentage")
+    d3.select(mainDiv).select(".percentage")
       .text(percentageString);
 
-    d3.select("#explanation")
+    d3.select(mainDiv).select(".explanation")
       .style("visibility", "");
 
     var sequenceArray = d.ancestors().reverse();
@@ -208,7 +319,7 @@ var showCoolPie = function (year, colors, dataName) {
     updateBreadcrumbs(sequenceArray, percentageString);
 
     // Fade all the segments.
-    d3.selectAll("path")
+    d3.select(mainDiv).selectAll("path")
       .style("opacity", 0.3);
 
     // Then highlight only those that are an ancestor of the current segment.
@@ -223,14 +334,14 @@ var showCoolPie = function (year, colors, dataName) {
   function mouseleave(d) {
 
     // Hide the breadcrumb trail
-    d3.select("#trail")
+    d3.select(mainDiv).select(".trail")
       .style("visibility", "hidden");
 
     // Deactivate all segments during transition.
-    d3.selectAll("path").on("mouseover", null);
+    d3.select(mainDiv).selectAll("path").on("mouseover", null);
 
     // Transition each segment to full opacity and then reactivate it.
-    d3.selectAll("path")
+    d3.select(mainDiv).selectAll("path")
       .transition()
       .duration(1000)
       .style("opacity", 1)
@@ -238,19 +349,19 @@ var showCoolPie = function (year, colors, dataName) {
         d3.select(this).on("mouseover", mouseover);
       });
 
-    d3.select("#explanation")
+    d3.select(mainDiv).select(".explanation")
       .style("visibility", "hidden");
   }
 
   function initializeBreadcrumbTrail() {
     // Add the svg area.
-    var trail = d3.select("#sequence").append("svg:svg")
+    var trail = d3.select(mainDiv).select(".sequence").append("svg:svg")
       .attr("width", width)
       .attr("height", 50)
-      .attr("id", "trail");
+      .attr("class", "trail");
     // Add the label at the end, for the percentage.
     trail.append("svg:text")
-      .attr("id", "endlabel")
+      .attr("class", "endlabel")
       .style("fill", "#000");
   }
 
@@ -272,7 +383,7 @@ var showCoolPie = function (year, colors, dataName) {
   function updateBreadcrumbs(nodeArray, percentageString) {
 
     // Data join; key function combines name and depth (= position in sequence).
-    var trail = d3.select("#trail")
+    var trail = d3.select(mainDiv).select(".trail")
       .selectAll("g")
       .data(nodeArray, function (d) {
         return d.data.name + d.depth;
@@ -305,7 +416,7 @@ var showCoolPie = function (year, colors, dataName) {
     });
 
     // Now move and update the percentage at the end.
-    d3.select("#trail").select("#endlabel")
+    d3.select(mainDiv).select(".trail").select(".endlabel")
       .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
       .attr("y", b.h / 2)
       .attr("dy", "0.35em")
@@ -313,7 +424,7 @@ var showCoolPie = function (year, colors, dataName) {
       .text(percentageString);
 
     // Make the breadcrumb trail visible, if it's hidden.
-    d3.select("#trail")
+    d3.select(mainDiv).select(".trail")
       .style("visibility", "");
 
   }
@@ -328,7 +439,7 @@ var showCoolPie = function (year, colors, dataName) {
       r: 3
     };
 
-    var legend = d3.select("#legend").append("svg:svg")
+    var legend = d3.select(mainDiv).select("#legend").append("svg:svg")
       .attr("width", li.w)
       .attr("height", d3.keys(colors).length * (li.h + li.s));
 
@@ -359,7 +470,7 @@ var showCoolPie = function (year, colors, dataName) {
   }
 
   function toggleLegend() {
-    var legend = d3.select("#legend");
+    var legend = d3.select(mainDiv).select("#legend");
     if (legend.style("visibility") == "hidden") {
       legend.style("visibility", "");
     } else {
@@ -421,117 +532,5 @@ var showCoolPie = function (year, colors, dataName) {
   };
 
 
-
-}
-
-getStringFromNode = function(node)
-{
-  if(node.depth == 0)
-  {
-    return "";
-  }
-  else if (node.parent.data.name == "root") {
-    return node.data.name;
-  }
-  var newNode = node.parent;
-  var totalString  =  node.data.name;
-  while(newNode.data.name!='root')
-  {
-    totalString = newNode.data.name + "-" +totalString;
-    newNode = newNode.parent;
-  }
-  return totalString;
-}
-
-showHistoryData = function(stringText,data)
-{
-   var filtered = data.filter(function(d){return d.depthInfo.startsWith(stringText);})
-   var byYearSum = d3.nest().key(function(d){return d.year})
-                            .rollup(function(v){return{year:Math.round(d3.mean(v,function(d){return +d.year})), sum: d3.sum(v,function(d){return +d.val})}})
-                            .entries(filtered);
-   var i;
-   var out = []
-   for(i=0; i<byYearSum.length;i++)
-   {
-    out.push(byYearSum[i].value)
-   }
-   return out;
-}
-
-var createBarChart = function(data)
-{
-
-  // set the dimensions and margins of the graph
-var margin = barMargin;
-
-var width = widthBar;
-var height = heightBar;
-
-// set the ranges
- barChartXScale = d3.scaleBand()
-          .range([0, width])
-          .padding(0.2);
-
- barChartYScale = d3.scaleLinear()
-          .range([height, 0]);
-
-// append the svg object to the body of the page
-// append a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
- svgBar = d3.select("body").select("#barChart").append("svg")
-    .attr("id", "barSVG")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
-  var minYear  = d3.min(data, function(d) { return d.year; });
-  var maxYear = d3.max(data, function(d) { return d.year; });
-  // Scale the range of the data in the domains
-  barChartXScale.domain(d3.ticks(minYear,maxYear,maxYear-minYear + 1));
-  barChartYScale.domain([0, d3.max(data, function(d) { return d.sum; })]);
-
-  // append the rectangles for the bar chart
-  svgBar.selectAll("rect")
-      .data(data)
-    .enter().append("rect")
-      .attr("x", function(d) { return barChartXScale(d.year); })
-      .attr("width", barChartXScale.bandwidth())
-      .attr("y", function(d) { return barChartYScale(d.sum); });
-
-  // add the x Axis
-  svgBar.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .attr("class", "x axis")
-      .call(d3.axisBottom(barChartXScale));
-
-  // add the y Axis
-  svgBar.append("g")
-      .attr("class", "y axis")
-      .call(d3.axisLeft(barChartYScale));
-}
-
-
-var updateBarChart = function(data, colorVal)
-{
-  var height = heightBar;
-  var width = widthBar;
-
-  barChartYScale.domain([0, d3.max(data, function(d) { return d.sum; })]);
-
-  svgBar.select(".y.axis")
-     .transition()
-     .duration(1000)
-     .call(d3.axisLeft(barChartYScale));
-
-  svgBar.selectAll("rect")
-     .data(data)
-     .transition()
-     .duration(1000)
-     .attr("x", function(d) { return barChartXScale(d.year); })
-     .attr("y", function(d) { console.log(barChartYScale(d.sum)); return barChartYScale(d.sum); })
-     .attr("height", function(d) { return height - barChartYScale(d.sum); })
-     .style("fill", colorVal);
 
 }

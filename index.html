@@ -57,17 +57,19 @@
 
     <div class="map"></div>
     <div id="main">
-      <div id="sequence"></div>
-      <div id="chart">
-        <div id="explanation" style="visibility: hidden;">
-          <span id="percentage"></span><br/>
+      <div class="sequence"></div>
+      <div class="chart">
+        <div class="explanation" style="visibility: hidden;">
+          <span class="percentage"></span><br/>
         </div>
       </div>
-      <div id = "barChart">
-
-      </div>
+      <div id="sidebar">
+     <input type="checkbox" id="togglelegend"> Legend<br/>
+     <div id="legend" style="visibility: hidden;"></div>
+   </div>
+      <div class = "barChart"></div>
     </div>
-  </div>
+
 
   <script type="text/javascript" src="sequences.js"></script>
   <script type="text/javascript" src="scripts/map.js">
@@ -75,10 +77,10 @@
   <script type "text/javascript">
 
 
-  // showCoolPie(2008, colorsPie, 'no_inhabitantsDistribution.csv')
+  updateCoolPieChart(getYear(), getMetric())
     var update = function(obj) {
-      d3.select("#pieSVG").remove()
-      d3.select("#barSVG").remove()
+      d3.selectAll(".pieSVG").remove()
+      d3.selectAll(".barSVG").remove()
 
       setMetric(obj.value);
       filterData()
@@ -89,8 +91,8 @@
     }
 
     var updateYear = function(obj) {
-      d3.select("#pieSVG").remove()
-      d3.select("#barSVG").remove()
+      d3.selectAll(".pieSVG").remove()
+      d3.selectAll(".barSVG").remove()
       console.log('updating the year');
       setYear(obj.value);
       filterData()
