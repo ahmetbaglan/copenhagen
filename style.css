@@ -7,20 +7,45 @@ h1 {
   color: black;
 }
 
+.tab {
+  color: black;
+  width: 50%;
+  margin: none;
+  float: left;
+  border-radius: 5px 5px 0px 0px;
+  border-top: 1px solid grey;
+  border-left: 1px solid grey;
+  border-right: 1px solid grey;
+}
+
+.selected {
+  border-bottom: none;
+}
+
+.deselected {
+  border-bottom: 1px solid #dedede;
+}
+
 .header {
+  padding-top: 10px;
   padding-left: 8%;
   padding-right: 8%;
 }
+
 .date {
   float: right;
 }
 
 .container {
-  padding: 10px 50px 10px 50px;
-  margin-left: 100px;
-  margin-right: 100px;
-  margin-top: 20px;
-  border-top: 1px solid #dedede;
+  /* padding: 10px 50px 10px 50px; */ */
+  margin-left: 8%;
+  margin-right: 8%;
+  padding-top: 20px;
+  border-bottom: 1px solid #dedede;
+}
+
+.no-tabs {
+  border-bottom: 1px solid #dedede;
 }
 
 .rectangle-test {

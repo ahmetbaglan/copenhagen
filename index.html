@@ -19,7 +19,21 @@
       over the last 10 years.</i>
     <strong class="date">14th of May, 2018</strong>
   </div>
-  <div class="container">
+  <div class="header">
+    <div class="col-md-4 tabs">
+      <button onclick="show('data')" class="tab selected" id="data-button">Data Story</button>
+      <button onclick="show('explainer')" class="tab" id="eplainer-button">Expainer Page</button>
+    </div>
+    <div class="col-md-8 no-tabs">
+
+    </div>
+
+  </div>
+  <div class="container" id="explainer" style="display: none">
+    <h3>Explainer Page</h3>
+  </div>
+  <div class="container" id="data">
+    <h3>The Data Story</h3>
     <p class="button-row">
       <div class="col-md-4">
         <p>
@@ -64,45 +78,59 @@
         </div>
       </div>
       <div id="sidebar">
-     <input type="checkbox" id="togglelegend"> Legend<br/>
-     <div id="legend" style="visibility: hidden;"></div>
-   </div>
-      <div class = "barChart"></div>
+        <input type="checkbox" id="togglelegend"> Legend<br/>
+        <div id="legend" style="visibility: hidden;"></div>
+      </div>
+      <div class="barChart"></div>
     </div>
 
 
-  <script type="text/javascript" src="sequences.js"></script>
-  <script type="text/javascript" src="scripts/map.js">
-  </script>
-  <script type "text/javascript">
+    <script type="text/javascript" src="sequences.js"></script>
+    <script type="text/javascript" src="scripts/map.js">
+    </script>
+    <script type "text/javascript">
+      var show = function(tag) {
+        if (tag === 'data') {
+          console.log('data');
+          document.getElementById('data').style.display = 'block';
+          document.getElementById('explainer').style.display = 'none';
+          document.getElementById('data-button').classList.add("selected");
+          document.getElementById('explainer-button').classList.remove("selected");
 
+        }
+        if (tag === 'explainer') {
+          document.getElementById('data').style.display = 'none';
+          document.getElementById('explainer').style.display = 'block';
+          document.getElementById('explainer-button').classList.add("selected");
+          document.getElementById('data-button').classList.remove("selected");
 
-  updateCoolPieChart(getYear(), getMetric())
-    var update = function(obj) {
-      d3.selectAll(".pieSVG").remove()
-      d3.selectAll(".barSVG").remove()
+        }
+      }
 
-      setMetric(obj.value);
-      filterData()
-      setColorDomain();
-      drawMap();
       updateCoolPieChart(getYear(), getMetric())
+      var update = function(obj) {
+        d3.selectAll(".pieSVG").remove()
+        d3.selectAll(".barSVG").remove()
 
-    }
+        setMetric(obj.value);
+        filterData()
+        setColorDomain();
+        drawMap();
+        updateCoolPieChart(getYear(), getMetric())
 
-    var updateYear = function(obj) {
-      d3.selectAll(".pieSVG").remove()
-      d3.selectAll(".barSVG").remove()
-      console.log('updating the year');
-      setYear(obj.value);
-      filterData()
-      setColorDomain();
-      drawMap();
-      updateCoolPieChart(getYear(),getMetric())
-    }
+      }
 
-
-  </script>
+      var updateYear = function(obj) {
+        d3.selectAll(".pieSVG").remove()
+        d3.selectAll(".barSVG").remove()
+        console.log('updating the year');
+        setYear(obj.value);
+        filterData()
+        setColorDomain();
+        drawMap();
+        updateCoolPieChart(getYear(), getMetric())
+      }
+    </script>
 
 </body>
 
