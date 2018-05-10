@@ -1,96 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8">
-		<title>D3: A simple packed Bubble Chart</title>
-		<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
-
-		<style type="text/css">
-			/* No style rules here yet */		
-		</style>
+	<title>D3: A simple packed Bubble Chart</title>
+	<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<style type="text/css">
+		/* No style rules here yet */
+	</style>
 </head>
+
 <body>
+	<!-- Something to keep ur svg in -->
+	<div class="container">
+		<div class="bubble">
+
+		</div>
+	</div>
 	<script type="text/javascript">
+		// set dataset as global variable to reference everywhere
+		// set year so can easily be changed and altered
+		// use 'current' district ID
+		var dataset,
+			district = 1,
+			year = '2013';
 
-        dataset = {
-            "children": [{"total": 3144, "delta": -808, "name": "SF - Socialistisk Folkeparti"}, 
-	{"total": 4844, "delta": -1376, "name": "Venstre, Danmarks Liberale Parti"}, 
-	{"total": 8, "delta": 8, "name": "Fabeldyret - Livstidspr\u00e6sident"}, 
-	{"total": 152, "delta": 0, "name": "Kristendemokraterne"},
-	{"total": 0, "delta": 0, "name": "Byr\u00e5dslisten"}, 
-	{"total": 384, "delta": 384, "name": "Nye Borgerlige"}]
-        };
-
-        var diameter = 600;
-        var color = d3.scaleOrdinal(d3.schemeCategory20);
-
-        var bubble = d3.pack(dataset)
-            .size([diameter, diameter])
-            .padding(1.5);
-
-        var svg = d3.select("body")
-            .append("svg")
-            .attr("width", diameter)
-            .attr("height", diameter)
-            .attr("class", "bubble");
-
-        var nodes = d3.hierarchy(dataset)
-            .sum(function(d) { return d.total; });
-
-        var node = svg.selectAll(".node")
-            .data(bubble(nodes).descendants())
-            .enter()
-            .filter(function(d){
-                return  !d.children
-            })
-            .append("g")
-            .attr("class", "node")
-            .attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            });
-
-        node.append("title")
-            .text(function(d) {
-                return d.name + ": " + d.total;
-            });
-
-        node.append("circle")
-            .attr("r", function(d) {
-                return d.r;
-            })
-            .style("fill", function(d,i) {
-                return color(i);
-            });
-
-        node.append("text")
-            .attr("dy", ".2em")
-            .style("text-anchor", "middle")
-            .text(function(d) {
-                return d.data.name.substring(0, d.r / 10);
-            })
-            .attr("font-family", "sans-serif")
-            .attr("font-size", function(d){
-                return d.r/5;
-            })
-            .attr("fill", "white");
-
-        node.append("text")
-            .attr("dy", "1.3em")
-            .style("text-anchor", "middle")
-            .text(function(d) {
-                return d.data.total;
-            })
-            .attr("font-family",  "Gill Sans", "Gill Sans MT")
-            .attr("font-size", function(d){
-                return d.r/5;
-            })
-            .attr("fill", "white");
-
-        d3.select(self.frameElement)
-            .style("height", diameter + "px");
+		// global settings
+		var diameter = 600;
+		var color = d3.scaleOrdinal(d3.schemeCategory20);
+		var svg = d3.select(".bubble")
+			.append("svg")
+			.attr("width", diameter)
+			.attr("height", diameter)
+			.attr("class", "bubble");
 
 
 
+		// load data asynchronously
+		d3.json('data/' + year + '_final.json', function(data) {
+			// look at data
+			// filter for current selected district
+			dataset = data[district]
+			console.log(dataset);
+			var bubble = d3.pack(dataset)
+				.size([diameter, diameter])
+				.padding(1.5);
+			// scale
+			var scaleRadius = d3.scaleLinear()
+				.domain([d3.min(dataset, function(d) {
+						return +d.total;
+					}),
+					d3.max(dataset, function(d) {
+						return +d.total;
+					})
+				])
+				.range([8, 15]);
+
+			// the nodes of the network
+			var nodes = d3.forceSimulation(dataset)
+				.force("charge", d3.forceManyBody().strength([-50]))
+				.force("x", d3.forceX())
+				.force("y", d3.forceY())
+				.on("tick", ticked);
+
+			// append the actual circles
+			var node = svg.selectAll("circle")
+				.data(dataset)
+				.enter()
+				.append("circle")
+				.attr('r', function(d) {
+					console.log('d', d);
+					return scaleRadius(d.total)
+				})
+			// get the coordinates of the nodes
+			function ticked(e) {
+				node.attr("cx", function(d) {
+						return d.x;
+					})
+					.attr("cy", function(d) {
+						return d.y;
+					});
+				// 'node' is each circle of the bubble chart
+			}
+			node.append("title")
+				.text(function(d) {
+					return d.name + ": " + d.total;
+				});
+
+			node.append("circle")
+				.attr("r", function(d) {
+					return d.r;
+				})
+				.style("fill", function(d, i) {
+					return color(i);
+				});
+
+			node.append("text")
+				.attr("dy", ".2em")
+				.style("text-anchor", "middle")
+				.text(function(d) {
+					return d.data.name.substring(0, d.r / 10);
+				})
+				.attr("font-family", "sans-serif")
+				.attr("font-size", function(d) {
+					return d.r / 5;
+				})
+				.attr("fill", "white");
+
+			node.append("text")
+				.attr("dy", "1.3em")
+				.style("text-anchor", "middle")
+				.text(function(d) {
+					return d.data.total;
+				})
+				.attr("font-family", "Gill Sans", "Gill Sans MT")
+				.attr("font-size", function(d) {
+					return d.r / 5;
+				})
+				.attr("fill", "white");
+
+
+		})
+
+
+
+
+
+
+
+		d3.select(self.frameElement)
+			.style("height", diameter + "px");
 	</script>
 </body>
+
 </html>
