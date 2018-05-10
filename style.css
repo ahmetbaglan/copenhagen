@@ -16,20 +16,20 @@ h1 {
   border-top: 1px solid grey;
   border-left: 1px solid grey;
   border-right: 1px solid grey;
+  background-color: #f1f1f1;
+
 }
 
 .selected {
   border-bottom: none;
-}
-
-.deselected {
-  border-bottom: 1px solid #dedede;
+  background-color: white;
 }
 
 .header {
   padding-top: 10px;
   padding-left: 8%;
   padding-right: 8%;
+  padding-bottom: 20px;
 }
 
 .date {
@@ -46,6 +46,14 @@ h1 {
 
 .no-tabs {
   border-bottom: 1px solid #dedede;
+  height: 25px;
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.tabs {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
 }
 
 .rectangle-test {

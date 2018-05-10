@@ -22,7 +22,7 @@
   <div class="header">
     <div class="col-md-4 tabs">
       <button onclick="show('data')" class="tab selected" id="data-button">Data Story</button>
-      <button onclick="show('explainer')" class="tab" id="eplainer-button">Expainer Page</button>
+      <button onclick="show('explainer')" class="tab" id="explainer-button">Expainer Page</button>
     </div>
     <div class="col-md-8 no-tabs">
 
@@ -71,6 +71,11 @@
 
     <div class="map"></div>
     <div id="main">
+      <select onchange="aptUpdate(this)" class="btn btn-default metric" id="apartmentDropDown">
+        <option selected value="apt_size">Apartment Size</option>
+        <option value="apt_age">Apartment Age</option>
+        <option value="apt_type">Apartment Type</option>
+      </select>
       <div class="sequence"></div>
       <div class="chart">
         <div class="explanation" style="visibility: hidden;">
@@ -78,9 +83,10 @@
         </div>
       </div>
       <div id="sidebar">
-        <input type="checkbox" id="togglelegend"> Legend<br/>
+        <input type="checkbox" id="togglelegend"><label>Legend</label><br/>
         <div id="legend" style="visibility: hidden;"></div>
       </div>
+      <i class="barChartTitle"> </i>
       <div class="barChart"></div>
     </div>
 
@@ -103,32 +109,42 @@
           document.getElementById('explainer').style.display = 'block';
           document.getElementById('explainer-button').classList.add("selected");
           document.getElementById('data-button').classList.remove("selected");
-
         }
       }
 
       updateCoolPieChart(getYear(), getMetric())
+      var aptUpdate = function(obj) {
+        d3.selectAll(".pieSVG").remove()
+        d3.selectAll(".barSVG").remove()
+        updateAptCoolPieChart(getYear(), obj.value)
+      }
       var update = function(obj) {
         d3.selectAll(".pieSVG").remove()
         d3.selectAll(".barSVG").remove()
 
-        setMetric(obj.value);
-        filterData()
-        setColorDomain();
-        drawMap();
         updateCoolPieChart(getYear(), getMetric())
+        var update = function(obj) {
+          d3.selectAll(".pieSVG").remove()
+          d3.selectAll(".barSVG").remove()
 
-      }
+          setMetric(obj.value);
+          filterData()
+          setColorDomain();
+          drawMap();
+          updateCoolPieChart(getYear(), getMetric())
 
-      var updateYear = function(obj) {
-        d3.selectAll(".pieSVG").remove()
-        d3.selectAll(".barSVG").remove()
-        console.log('updating the year');
-        setYear(obj.value);
-        filterData()
-        setColorDomain();
-        drawMap();
-        updateCoolPieChart(getYear(), getMetric())
+        }
+
+        var updateYear = function(obj) {
+          d3.selectAll(".pieSVG").remove()
+          d3.selectAll(".barSVG").remove()
+          console.log('updating the year');
+          setYear(obj.value);
+          filterData()
+          setColorDomain();
+          drawMap();
+          updateCoolPieChart(getYear(), getMetric())
+        }
       }
     </script>
 
