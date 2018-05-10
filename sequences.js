@@ -11,12 +11,8 @@ var clearLegend  = function()
 
 var updateAptCoolPieChart = function(year, type)
 {
-  var checkBox = d3.select("#togglelegend")
-  checkBox.style("visibility", "visible");
-  d3.select("#main").select("label").text("Legend");
-  d3.select("#legend").selectAll("*").remove()
-  d3.select("#barChartTitle").text("")
-  d3.select("#apartmentDropDown").style("visibility", "hidden");
+  clearLegend()
+  d3.select("#apartmentDropDown").style("visibility", "visible");
   selectedApt = type;
   if(type == "apt_age")
   {
