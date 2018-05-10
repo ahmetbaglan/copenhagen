@@ -134,17 +134,17 @@
           updateCoolPieChart(getYear(), getMetric())
 
         }
+      }
 
-        var updateYear = function(obj) {
-          d3.selectAll(".pieSVG").remove()
-          d3.selectAll(".barSVG").remove()
-          console.log('updating the year');
-          setYear(obj.value);
-          filterData()
-          setColorDomain();
-          drawMap();
-          updateCoolPieChart(getYear(), getMetric())
-        }
+      var updateYear = function(obj) {
+        d3.selectAll(".pieSVG").remove()
+        d3.selectAll(".barSVG").remove()
+        console.log('updating the year');
+        setYear(obj.value);
+        filterData()
+        setColorDomain();
+        drawMap();
+        updateCoolPieChart(getYear(), getMetric())
       }
     </script>
 
