@@ -60,10 +60,10 @@ var updateAptCoolPieChart = function(year, type)
   }
   else if (type == "apt_type") {
     var colors = {
-      "Under 40m": "#0b2330",
-      "100m ~ 199m": "#afd5ea",
-      "60m ~ 79m": "#87a2ae",
-      "80m ~ 99m": "#e88e3a",
+      "Social": "#0b2330",
+      "Cooperative": "#afd5ea",
+      "Officially Owned": "#87a2ae",
+      "Private": "#e88e3a",
       "Amager Vest": "#447604",
       "Amager Øst": "#a2a79e",
       "Bispebjerg": "#a27e8e",
