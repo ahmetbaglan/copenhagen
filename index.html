@@ -57,6 +57,11 @@
 
     <div class="map"></div>
     <div id="main">
+      <select onchange="aptUpdate(this)" class="btn btn-default metric" id= "apartmentDropDown">
+        <option selected value="apt_size">Apartment Size</option>
+        <option value="apt_age">Apartment Age</option>
+        <option value="apt_type">Apartment Type</option>
+      </select>
       <div class="sequence"></div>
       <div class="chart">
         <div class="explanation" style="visibility: hidden;">
@@ -64,9 +69,10 @@
         </div>
       </div>
       <div id="sidebar">
-     <input type="checkbox" id="togglelegend"> Legend<br/>
+     <input type="checkbox" id="togglelegend"><label>Legend</label><br/>
      <div id="legend" style="visibility: hidden;"></div>
    </div>
+      <i class = "barChartTitle"> </i>
       <div class = "barChart"></div>
     </div>
 
@@ -77,7 +83,13 @@
   <script type "text/javascript">
 
 
-  updateCoolPieChart(getYear(), getMetric())
+    updateCoolPieChart(getYear(), getMetric())
+    var aptUpdate = function(obj)
+    {
+      d3.selectAll(".pieSVG").remove()
+      d3.selectAll(".barSVG").remove()
+      updateAptCoolPieChart(getYear(), obj.value)
+    }
     var update = function(obj) {
       d3.selectAll(".pieSVG").remove()
       d3.selectAll(".barSVG").remove()

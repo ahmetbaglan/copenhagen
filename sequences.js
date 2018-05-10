@@ -1,73 +1,161 @@
+var selectedApt = "apt_size";
+var updateAptCoolPieChart = function(year, type)
+{
+  selectedApt = type;
+  if(type == "apt_age")
+  {
+    var colors = {
+      "1900~1929": "#0b2330",
+      "1930~1949": "#afd5ea",
+      "1950~1979": "#87a2ae",
+      "after 1980": "#e88e3a",
+      "before 1900":"#e8cf91",
+      "Amager Vest": "#447604",
+      "Amager Øst": "#a2a79e",
+      "Bispebjerg": "#a27e8e",
+      "Brønshøj~Husum": "#88292f",
+      "Indre By": "#006992",
+      "Nørrebro": "#001d4a",
+      "Valby": "#a77464",
+      "Vanløse": "#2e1e0f",
+      "Vesterbro~kongens Enghave": "#96bbbb",
+      "Østerbro":"#d7fcd4"
+    };
+    showCoolPie(year, colors, 'no_apartmentsDistribution.csv',"#main")
+  }
+  else if (type == "apt_size") {
+    var colors = {
+      "Under 40m": "#0b2330",
+      "100m ~ 199m": "#afd5ea",
+      "60m ~ 79m": "#87a2ae",
+      "80m ~ 99m": "#e88e3a",
+      "Amager Vest": "#447604",
+      "Amager Øst": "#a2a79e",
+      "Bispebjerg": "#a27e8e",
+      "Brønshøj~Husum": "#88292f",
+      "Indre By": "#006992",
+      "Nørrebro": "#001d4a",
+      "Valby": "#a77464",
+      "Vanløse": "#2e1e0f",
+      "Vesterbro~kongens Enghave": "#96bbbb",
+      "Østerbro":"#d7fcd4"
+    };
+    showCoolPie(year, colors, 'no_apartmentsSizeDistribution.csv',"#main")
+  }
+  else if (type == "apt_type") {
+    var colors = {
+      "Under 40m": "#0b2330",
+      "100m ~ 199m": "#afd5ea",
+      "60m ~ 79m": "#87a2ae",
+      "80m ~ 99m": "#e88e3a",
+      "Amager Vest": "#447604",
+      "Amager Øst": "#a2a79e",
+      "Bispebjerg": "#a27e8e",
+      "Brønshøj~Husum": "#88292f",
+      "Indre By": "#006992",
+      "Nørrebro": "#001d4a",
+      "Valby": "#a77464",
+      "Vanløse": "#2e1e0f",
+      "Vesterbro~kongens Enghave": "#96bbbb",
+      "Østerbro":"#d7fcd4"
+    };
+    showCoolPie(year, colors, 'no_apartmentsTypeDistribution.csv',"#main")
+  }
+}
+
 
 // var mainDiv = "#main"
 var updateCoolPieChart = function(year, met)
 {
+  var checkBox = d3.select("#togglelegend")
+  checkBox.style("visibility", "visible");
+  d3.select("#main").select("label").text("Legend");
+  d3.select("#legend").selectAll("*").remove()
+  d3.select("#barChartTitle").text("")
+  d3.select("#apartmentDropDown").style("visibility", "hidden");
   if (met == "no_inhabitants") {
     var colors = {
       "couple": "#5687d1",
       "other": "#7b615c",
       "single": "#de783b",
-      "Without Kids": "#6ab975",
-      "With Kids": "#a173d1",
-      "amager_vest": "#93707E",
-      "bispebjerg": "#8E94F2",
-      "brønshøj husum": "#ADFFC9"
+      "Without Kids": "#a9def9",
+      "With Kids": "#e4c1f9",
+      "Amager Vest": "#447604",
+      "Amager Øst": "#a2a79e",
+      "Bispebjerg": "#a27e8e",
+      "Brønshøj~Husum": "#88292f",
+      "Indre By": "#006992",
+      "Nørrebro": "#001d4a",
+      "Valby": "#a77464",
+      "Vanløse": "#2e1e0f",
+      "Vesterbro~kongens Enghave": "#96bbbb",
+      "Østerbro":"#d7fcd4"
     };
     showCoolPie(year, colors, 'no_inhabitantsDistribution.csv',"#main")
   } else if (met == "avg_age") {
 
     var colors = {
-      "couple": "#5687d1",
-      "other": "#7b615c",
-      "single": "#de783b",
-      "Without Kids": "#6ab975",
-      "With Kids": "#a173d1",
-      "amager_vest": "#93707E",
-      "bispebjerg": "#8E94F2",
-      "brønshøj husum": "#ADFFC9"
+      "0~5": "#0b2330",
+      "6~17": "#afd5ea",
+      "18~29": "#87a2ae",
+      "30~39": "#cfd9e3",
+      "40~49": "#1f5569",
+      "50~64": "#e88e3a",
+      "over 65":"#e8cf91",
+      "Amager Vest": "#447604",
+      "Amager Øst": "#a2a79e",
+      "Bispebjerg": "#a27e8e",
+      "Brønshøj~Husum": "#88292f",
+      "Indre By": "#006992",
+      "Nørrebro": "#001d4a",
+      "Valby": "#a77464",
+      "Vanløse": "#2e1e0f",
+      "Vesterbro~kongens Enghave": "#96bbbb",
+      "Østerbro":"#d7fcd4"
     };
     showCoolPie(year, colors, 'no_ageDistribution.csv',"#main")
   }
   else if (met == "no_apartments") {
 
-    var colors = {
-      "couple": "#5687d1",
-      "other": "#7b615c",
-      "single": "#de783b",
-      "Without Kids": "#6ab975",
-      "With Kids": "#a173d1",
-      "amager_vest": "#93707E",
-      "bispebjerg": "#8E94F2",
-      "brønshøj husum": "#ADFFC9"
-    };
-    showCoolPie(year, colors, 'no_apartmentsDistribution.csv',"#main")
+    updateAptCoolPieChart(year,selectedApt)
+    d3.select("#apartmentDropDown").style("visibility", "visible");
 
   }
   else if (met == "avg_income") {
 
     var colors = {
-      "couple": "#5687d1",
-      "other": "#7b615c",
-      "single": "#de783b",
-      "Without Kids": "#6ab975",
-      "With Kids": "#a173d1",
-      "amager_vest": "#93707E",
-      "bispebjerg": "#8E94F2",
-      "brønshøj husum": "#ADFFC9"
+      "High Income" : "#ad7a99",
+      "Middle Income": "#b2cede",
+      "Low Income": "#8cdfd6",
+      "Amager Vest": "#447604",
+      "Amager Øst": "#a2a79e",
+      "Bispebjerg": "#a27e8e",
+      "Brønshøj~Husum": "#88292f",
+      "Indre By": "#006992",
+      "Nørrebro": "#001d4a",
+      "Valby": "#a77464",
+      "Vanløse": "#2e1e0f",
+      "Vesterbro~kongens Enghave": "#96bbbb",
+      "Østerbro":"#d7fcd4"
     };
     showCoolPie(year, colors, 'avg_incomeDistribution.csv', "#main")
-    showCoolPie(year, colors, 'avg_incomeDistribution.csv', "#main2")
+  }
+  else {
+    d3.select("#togglelegend").style("visibility", "hidden");
+    checkBox.style("visibility", "hidden");
+      d3.select("#main").select("label").text("")
   }
 
 }
 
 var showCoolPie = function (year, colors, dataName, mainDiv) {
+
   var nodesLol;
   var dataLol;
   var barChartYScale;
   var barChartXScale;
   var svgBar;
-  var barMargin ={top: 20, right: 20, bottom: 30, left: 40};
+  var barMargin ={top: 20, right: 20, bottom: 30, left: 60};
   var widthBar = 500 - barMargin.left - barMargin.right;
   var heightBar = 300 - barMargin.top - barMargin.bottom;
   // de.("#barChart").selectAll("svg").remove()
@@ -78,7 +166,7 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
 
   // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
   var b = {
-    w: 75,
+    w: 140,
     h: 30,
     s: 3,
     t: 10
@@ -202,8 +290,10 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
     }
 
 
-    var updateBarChart = function(data, colorVal)
+    var updateBarChart = function(data, colorVal, search)
     {
+
+      d3.select(mainDiv).select(".barChartTitle").text(search).style("font-weight", "600");
       var height = heightBar;
       var width = widthBar;
 
@@ -284,7 +374,7 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
       })
       .style("opacity", 1)
       .on("mouseover", mouseover)
-      .on("click", function(d){var data = showHistoryData(getStringFromNode(d), wholeData); updateBarChart(data, colors[d.data.name])});
+      .on("click", function(d){var search = getStringFromNode(d);  var data = showHistoryData(search, wholeData); updateBarChart(data, colors[d.data.name],search)});
       console.log(json)
     // Add the mouseleave handler to the bounding circle.
     d3.select(mainDiv).select(".container").on("mouseleave", mouseleave);
@@ -433,7 +523,7 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
 
     // Dimensions of legend item: width, height, spacing, radius of rounded rect.
     var li = {
-      w: 75,
+      w: 200,
       h: 30,
       s: 3,
       r: 3
