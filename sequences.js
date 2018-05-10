@@ -1,6 +1,22 @@
 var selectedApt = "apt_size";
+var clearLegend  = function()
+{
+  var checkBox = d3.select("#togglelegend")
+  checkBox.style("visibility", "visible");
+  d3.select("#main").select("label").text("Legend");
+  d3.select("#legend").selectAll("*").remove()
+  d3.select("#barChartTitle").text("")
+  d3.select("#apartmentDropDown").style("visibility", "hidden");
+}
+
 var updateAptCoolPieChart = function(year, type)
 {
+  var checkBox = d3.select("#togglelegend")
+  checkBox.style("visibility", "visible");
+  d3.select("#main").select("label").text("Legend");
+  d3.select("#legend").selectAll("*").remove()
+  d3.select("#barChartTitle").text("")
+  d3.select("#apartmentDropDown").style("visibility", "hidden");
   selectedApt = type;
   if(type == "apt_age")
   {
@@ -67,12 +83,7 @@ var updateAptCoolPieChart = function(year, type)
 // var mainDiv = "#main"
 var updateCoolPieChart = function(year, met)
 {
-  var checkBox = d3.select("#togglelegend")
-  checkBox.style("visibility", "visible");
-  d3.select("#main").select("label").text("Legend");
-  d3.select("#legend").selectAll("*").remove()
-  d3.select("#barChartTitle").text("")
-  d3.select("#apartmentDropDown").style("visibility", "hidden");
+  clearLegend()
   if (met == "no_inhabitants") {
     var colors = {
       "couple": "#5687d1",
