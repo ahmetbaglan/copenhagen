@@ -24,9 +24,8 @@
 		// set year so can easily be changed and altered
 		// use 'current' district ID
 		var dataset,
-			district = 1,
-			year = '2013';
-
+			district = 2,
+			year = '2017';
 		// global settings
 		var diameter = 600;
 		var color = d3.scaleOrdinal(d3.schemeCategory20);
@@ -35,9 +34,6 @@
 			.attr("width", diameter)
 			.attr("height", diameter)
 			.attr("class", "bubble");
-
-
-
 		// load data asynchronously
 		d3.json('data/' + year + '_final.json', function(data) {
 			// look at data
@@ -56,15 +52,13 @@
 						return +d.total;
 					})
 				])
-				.range([8, 15]);
-
+				.range([8, 40]);
 			// the nodes of the network
 			var nodes = d3.forceSimulation(dataset)
-				.force("charge", d3.forceManyBody().strength([-50]))
+				.force("charge", d3.forceManyBody().strength([-40]))
 				.force("x", d3.forceX())
 				.force("y", d3.forceY())
 				.on("tick", ticked);
-
 			// append the actual circles
 			var node = svg.selectAll("circle")
 				.data(dataset)
@@ -73,7 +67,11 @@
 				.attr('r', function(d) {
 					console.log('d', d);
 					return scaleRadius(d.total)
-				})
+				}).attr("transform", function(d) {
+                return "translate(" + (d.x+diameter/2) + "," + (d.y+diameter/2) + ")";
+            }).style("fill", function(d,i) {
+                return color(i);
+            });
 			// get the coordinates of the nodes
 			function ticked(e) {
 				node.attr("cx", function(d) {
@@ -88,48 +86,36 @@
 				.text(function(d) {
 					return d.name + ": " + d.total;
 				});
-
 			node.append("circle")
-				.attr("r", function(d) {
-					return d.r;
-				})
-				.style("fill", function(d, i) {
-					return color(i);
-				});
-
+            .attr("r", function(d) {
+                return d.r;
+            })
+            .style("fill", function(d,i) {
+                return color(i);
+            });
 			node.append("text")
 				.attr("dy", ".2em")
 				.style("text-anchor", "middle")
 				.text(function(d) {
-					return d.data.name.substring(0, d.r / 10);
+					return d.name;
 				})
 				.attr("font-family", "sans-serif")
 				.attr("font-size", function(d) {
 					return d.r / 5;
 				})
 				.attr("fill", "white");
-
 			node.append("text")
 				.attr("dy", "1.3em")
 				.style("text-anchor", "middle")
 				.text(function(d) {
-					return d.data.total;
+					return d.total;
 				})
 				.attr("font-family", "Gill Sans", "Gill Sans MT")
 				.attr("font-size", function(d) {
 					return d.r / 5;
 				})
-				.attr("fill", "white");
-
-
+				.attr("fill", "green");
 		})
-
-
-
-
-
-
-
 		d3.select(self.frameElement)
 			.style("height", diameter + "px");
 	</script>
