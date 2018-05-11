@@ -1,7 +1,8 @@
 var selectedApt = "apt_size";
-var clearLegend  = function()
-{
-  var checkBox = d3.select("#togglelegend")
+var checkBox = d3.select("#togglelegend")
+
+var clearLegend = function () {
+  console.log('checkbox', checkBox);
   checkBox.style("visibility", "visible");
   d3.select("#main").select("label").text("Legend");
   d3.select("#legend").selectAll("*").remove()
@@ -9,19 +10,17 @@ var clearLegend  = function()
   d3.select("#apartmentDropDown").style("visibility", "hidden");
 }
 
-var updateAptCoolPieChart = function(year, type)
-{
+var updateAptCoolPieChart = function (year, type) {
   clearLegend()
   d3.select("#apartmentDropDown").style("visibility", "visible");
   selectedApt = type;
-  if(type == "apt_age")
-  {
+  if (type == "apt_age") {
     var colors = {
       "1900~1929": "#0b2330",
       "1930~1949": "#afd5ea",
       "1950~1979": "#87a2ae",
       "after 1980": "#e88e3a",
-      "before 1900":"#e8cf91",
+      "before 1900": "#e8cf91",
       "Amager Vest": "#447604",
       "Amager Øst": "#a2a79e",
       "Bispebjerg": "#a27e8e",
@@ -31,11 +30,10 @@ var updateAptCoolPieChart = function(year, type)
       "Valby": "#a77464",
       "Vanløse": "#2e1e0f",
       "Vesterbro~kongens Enghave": "#96bbbb",
-      "Østerbro":"#d7fcd4"
+      "Østerbro": "#d7fcd4"
     };
-    showCoolPie(year, colors, 'no_apartmentsDistribution.csv',"#main")
-  }
-  else if (type == "apt_size") {
+    showCoolPie(year, colors, 'no_apartmentsDistribution.csv', "#main")
+  } else if (type == "apt_size") {
     var colors = {
       "Under 40m": "#0b2330",
       "100m ~ 199m": "#afd5ea",
@@ -50,11 +48,10 @@ var updateAptCoolPieChart = function(year, type)
       "Valby": "#a77464",
       "Vanløse": "#2e1e0f",
       "Vesterbro~kongens Enghave": "#96bbbb",
-      "Østerbro":"#d7fcd4"
+      "Østerbro": "#d7fcd4"
     };
-    showCoolPie(year, colors, 'no_apartmentsSizeDistribution.csv',"#main")
-  }
-  else if (type == "apt_type") {
+    showCoolPie(year, colors, 'no_apartmentsSizeDistribution.csv', "#main")
+  } else if (type == "apt_type") {
     var colors = {
       "Social": "#0b2330",
       "Cooperative": "#afd5ea",
@@ -69,16 +66,15 @@ var updateAptCoolPieChart = function(year, type)
       "Valby": "#a77464",
       "Vanløse": "#2e1e0f",
       "Vesterbro~kongens Enghave": "#96bbbb",
-      "Østerbro":"#d7fcd4"
+      "Østerbro": "#d7fcd4"
     };
-    showCoolPie(year, colors, 'no_apartmentsTypeDistribution.csv',"#main")
+    showCoolPie(year, colors, 'no_apartmentsTypeDistribution.csv', "#main")
   }
 }
 
 
 // var mainDiv = "#main"
-var updateCoolPieChart = function(year, met)
-{
+var updateCoolPieChart = function (year, met) {
   clearLegend()
   if (met == "no_inhabitants") {
     var colors = {
@@ -96,9 +92,9 @@ var updateCoolPieChart = function(year, met)
       "Valby": "#a77464",
       "Vanløse": "#2e1e0f",
       "Vesterbro~kongens Enghave": "#96bbbb",
-      "Østerbro":"#d7fcd4"
+      "Østerbro": "#d7fcd4"
     };
-    showCoolPie(year, colors, 'no_inhabitantsDistribution.csv',"#main")
+    showCoolPie(year, colors, 'no_inhabitantsDistribution.csv', "#main")
   } else if (met == "avg_age") {
 
     var colors = {
@@ -108,7 +104,7 @@ var updateCoolPieChart = function(year, met)
       "30~39": "#cfd9e3",
       "40~49": "#1f5569",
       "50~64": "#e88e3a",
-      "over 65":"#e8cf91",
+      "over 65": "#e8cf91",
       "Amager Vest": "#447604",
       "Amager Øst": "#a2a79e",
       "Bispebjerg": "#a27e8e",
@@ -118,20 +114,18 @@ var updateCoolPieChart = function(year, met)
       "Valby": "#a77464",
       "Vanløse": "#2e1e0f",
       "Vesterbro~kongens Enghave": "#96bbbb",
-      "Østerbro":"#d7fcd4"
+      "Østerbro": "#d7fcd4"
     };
-    showCoolPie(year, colors, 'no_ageDistribution.csv',"#main")
-  }
-  else if (met == "no_apartments") {
+    showCoolPie(year, colors, 'no_ageDistribution.csv', "#main")
+  } else if (met == "no_apartments") {
 
-    updateAptCoolPieChart(year,selectedApt)
+    updateAptCoolPieChart(year, selectedApt)
     d3.select("#apartmentDropDown").style("visibility", "visible");
 
-  }
-  else if (met == "avg_income") {
+  } else if (met == "avg_income") {
 
     var colors = {
-      "High Income" : "#ad7a99",
+      "High Income": "#ad7a99",
       "Middle Income": "#b2cede",
       "Low Income": "#8cdfd6",
       "Amager Vest": "#447604",
@@ -143,14 +137,13 @@ var updateCoolPieChart = function(year, met)
       "Valby": "#a77464",
       "Vanløse": "#2e1e0f",
       "Vesterbro~kongens Enghave": "#96bbbb",
-      "Østerbro":"#d7fcd4"
+      "Østerbro": "#d7fcd4"
     };
     showCoolPie(year, colors, 'avg_incomeDistribution.csv', "#main")
-  }
-  else {
+  } else {
     d3.select("#togglelegend").style("visibility", "hidden");
     checkBox.style("visibility", "hidden");
-      d3.select("#main").select("label").text("")
+    d3.select("#main").select("label").text("")
   }
 
 }
@@ -162,7 +155,12 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
   var barChartYScale;
   var barChartXScale;
   var svgBar;
-  var barMargin ={top: 20, right: 20, bottom: 30, left: 60};
+  var barMargin = {
+    top: 20,
+    right: 20,
+    bottom: 30,
+    left: 60
+  };
   var widthBar = 500 - barMargin.left - barMargin.right;
   var heightBar = 300 - barMargin.top - barMargin.bottom;
   // de.("#barChart").selectAll("svg").remove()
@@ -184,7 +182,7 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
   var totalSize = 0;
 
   var vis = d3.select(mainDiv).select(".chart").append("svg:svg")
-    .attr("class","pieSVG")
+    .attr("class", "pieSVG")
     .attr("width", width)
     .attr("height", height)
     .append("svg:g")
@@ -208,119 +206,142 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
       return Math.sqrt(d.y1);
     });
 
-    getStringFromNode = function(node)
-    {
-      if(node.depth == 0)
-      {
-        return "";
-      }
-      else if (node.parent.data.name == "root") {
-        return node.data.name;
-      }
-      var newNode = node.parent;
-      var totalString  =  node.data.name;
-      while(newNode.data.name!='root')
-      {
-        totalString = newNode.data.name + "-" +totalString;
-        newNode = newNode.parent;
-      }
-      return totalString;
+  getStringFromNode = function (node) {
+    if (node.depth == 0) {
+      return "";
+    } else if (node.parent.data.name == "root") {
+      return node.data.name;
     }
-
-    showHistoryData = function(stringText,data)
-    {
-       var filtered = data.filter(function(d){return d.depthInfo.startsWith(stringText);})
-       var byYearSum = d3.nest().key(function(d){return d.year})
-                                .rollup(function(v){return{year:Math.round(d3.mean(v,function(d){return +d.year})), sum: d3.sum(v,function(d){return +d.val})}})
-                                .entries(filtered);
-       var i;
-       var out = []
-       for(i=0; i<byYearSum.length;i++)
-       {
-        out.push(byYearSum[i].value)
-       }
-       return out;
+    var newNode = node.parent;
+    var totalString = node.data.name;
+    while (newNode.data.name != 'root') {
+      totalString = newNode.data.name + "-" + totalString;
+      newNode = newNode.parent;
     }
+    return totalString;
+  }
 
-    var createBarChart = function(data)
-    {
+  showHistoryData = function (stringText, data) {
+    var filtered = data.filter(function (d) {
+      return d.depthInfo.startsWith(stringText);
+    })
+    var byYearSum = d3.nest().key(function (d) {
+        return d.year
+      })
+      .rollup(function (v) {
+        return {
+          year: Math.round(d3.mean(v, function (d) {
+            return +d.year
+          })),
+          sum: d3.sum(v, function (d) {
+            return +d.val
+          })
+        }
+      })
+      .entries(filtered);
+    var i;
+    var out = []
+    for (i = 0; i < byYearSum.length; i++) {
+      out.push(byYearSum[i].value)
+    }
+    return out;
+  }
 
-      // set the dimensions and margins of the graph
+  var createBarChart = function (data) {
+
+    // set the dimensions and margins of the graph
     var margin = barMargin;
 
     var width = widthBar;
     var height = heightBar;
 
     // set the ranges
-     barChartXScale = d3.scaleBand()
-              .range([0, width])
-              .padding(0.2);
+    barChartXScale = d3.scaleBand()
+      .range([0, width])
+      .padding(0.2);
 
-     barChartYScale = d3.scaleLinear()
-              .range([height, 0]);
+    barChartYScale = d3.scaleLinear()
+      .range([height, 0]);
 
     // append the svg object to the body of the page
     // append a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
-     svgBar = d3.select(mainDiv).select(".barChart").append("svg")
-        .attr("class", "barSVG")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+    svgBar = d3.select(mainDiv).select(".barChart").append("svg")
+      .attr("class", "barSVG")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
       .append("g")
-        .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
 
-      var minYear  = d3.min(data, function(d) { return d.year; });
-      var maxYear = d3.max(data, function(d) { return d.year; });
-      // Scale the range of the data in the domains
-      barChartXScale.domain(d3.ticks(minYear,maxYear,maxYear-minYear + 1));
-      barChartYScale.domain([0, d3.max(data, function(d) { return d.sum; })]);
+    var minYear = d3.min(data, function (d) {
+      return d.year;
+    });
+    var maxYear = d3.max(data, function (d) {
+      return d.year;
+    });
+    // Scale the range of the data in the domains
+    barChartXScale.domain(d3.ticks(minYear, maxYear, maxYear - minYear + 1));
+    barChartYScale.domain([0, d3.max(data, function (d) {
+      return d.sum;
+    })]);
 
-      // append the rectangles for the bar chart
-      svgBar.selectAll("rect")
-          .data(data)
-        .enter().append("rect")
-          .attr("x", function(d) { return barChartXScale(d.year); })
-          .attr("width", barChartXScale.bandwidth())
-          .attr("y", function(d) { return barChartYScale(d.sum); });
+    // append the rectangles for the bar chart
+    svgBar.selectAll("rect")
+      .data(data)
+      .enter().append("rect")
+      .attr("x", function (d) {
+        return barChartXScale(d.year);
+      })
+      .attr("width", barChartXScale.bandwidth())
+      .attr("y", function (d) {
+        return barChartYScale(d.sum);
+      });
 
-      // add the x Axis
-      svgBar.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .attr("class", "x axis")
-          .call(d3.axisBottom(barChartXScale));
+    // add the x Axis
+    svgBar.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .attr("class", "x axis")
+      .call(d3.axisBottom(barChartXScale));
 
-      // add the y Axis
-      svgBar.append("g")
-          .attr("class", "y axis")
-          .call(d3.axisLeft(barChartYScale));
-    }
+    // add the y Axis
+    svgBar.append("g")
+      .attr("class", "y axis")
+      .call(d3.axisLeft(barChartYScale));
+  }
 
 
-    var updateBarChart = function(data, colorVal, search)
-    {
+  var updateBarChart = function (data, colorVal, search) {
 
-      d3.select(mainDiv).select(".barChartTitle").text(search).style("font-weight", "600");
-      var height = heightBar;
-      var width = widthBar;
+    d3.select(mainDiv).select(".barChartTitle").text(search).style("font-weight", "600");
+    var height = heightBar;
+    var width = widthBar;
 
-      barChartYScale.domain([0, d3.max(data, function(d) { return d.sum; })]);
+    barChartYScale.domain([0, d3.max(data, function (d) {
+      return d.sum;
+    })]);
 
-      svgBar.select(".y.axis")
-         .transition()
-         .duration(1000)
-         .call(d3.axisLeft(barChartYScale));
+    svgBar.select(".y.axis")
+      .transition()
+      .duration(1000)
+      .call(d3.axisLeft(barChartYScale));
 
-      svgBar.selectAll("rect")
-         .data(data)
-         .transition()
-         .duration(1000)
-         .attr("x", function(d) { return barChartXScale(d.year); })
-         .attr("y", function(d) { console.log(barChartYScale(d.sum)); return barChartYScale(d.sum); })
-         .attr("height", function(d) { return height - barChartYScale(d.sum); })
-         .style("fill", colorVal);
+    svgBar.selectAll("rect")
+      .data(data)
+      .transition()
+      .duration(1000)
+      .attr("x", function (d) {
+        return barChartXScale(d.year);
+      })
+      .attr("y", function (d) {
+        return barChartYScale(d.sum);
+      })
+      .attr("height", function (d) {
+        return height - barChartYScale(d.sum);
+      })
+      .style("fill", colorVal);
 
-    }
+  }
   // Use d3.text and d3.csvParseRows so that we do not need to have a header
   // row, and can receive the csv as an array of arrays.
   d3.text(dataName, function (text) {
@@ -337,7 +358,7 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
     // var csv = d3.csvParseRows(text);
     var json = buildHierarchy(csv);
 
-    createVisualization(json,dataFull);
+    createVisualization(json, dataFull);
 
   });
   // Main function to draw and set up the visualization, once we have the data.
@@ -381,15 +402,18 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
       })
       .style("opacity", 1)
       .on("mouseover", mouseover)
-      .on("click", function(d){var search = getStringFromNode(d);  var data = showHistoryData(search, wholeData); updateBarChart(data, colors[d.data.name],search)});
-      console.log(json)
+      .on("click", function (d) {
+        var search = getStringFromNode(d);
+        var data = showHistoryData(search, wholeData);
+        updateBarChart(data, colors[d.data.name], search)
+      });
     // Add the mouseleave handler to the bounding circle.
     d3.select(mainDiv).select(".container").on("mouseleave", mouseleave);
 
     // Get total size of the tree = value of root node from partition.
     totalSize = path.datum().value;
 
-    var firstData  = showHistoryData(getStringFromNode(nodesLol[10]), dataLol)
+    var firstData = showHistoryData(getStringFromNode(nodesLol[10]), dataLol)
     createBarChart(firstData);
 
 
@@ -398,7 +422,6 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
 
   // Fade all but the current sequence, and show it in the breadcrumb trail.
   function mouseover(d) {
-    console.log("ooooooooooooooooooooooooooooooooooooooooooo")
     var percentage = (100 * d.value / totalSize).toPrecision(3);
     var percentageString = percentage + "%";
     if (percentage < 0.1) {

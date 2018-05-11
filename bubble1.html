@@ -24,7 +24,7 @@
 		// set year so can easily be changed and altered
 		// use 'current' district ID
 		var dataset,
-			district = 2,
+			district = 6,
 			year = '2017';
 		// global settings
 		var diameter = 600;
@@ -37,6 +37,7 @@
 		// load data asynchronously
 		d3.json('data/' + year + '_final.json', function(data) {
 			// look at data
+			console.log(data);
 			// filter for current selected district
 			dataset = data[district]
 			console.log(dataset);
@@ -65,13 +66,12 @@
 				.enter()
 				.append("circle")
 				.attr('r', function(d) {
-					console.log('d', d);
 					return scaleRadius(d.total)
 				}).attr("transform", function(d) {
-                return "translate(" + (d.x+diameter/2) + "," + (d.y+diameter/2) + ")";
-            }).style("fill", function(d,i) {
-                return color(i);
-            });
+					return "translate(" + (d.x + diameter / 2) + "," + (d.y + diameter / 2) + ")";
+				}).style("fill", function(d, i) {
+					return color(i);
+				});
 			// get the coordinates of the nodes
 			function ticked(e) {
 				node.attr("cx", function(d) {
@@ -87,21 +87,23 @@
 					return d.name + ": " + d.total;
 				});
 			node.append("circle")
-            .attr("r", function(d) {
-                return d.r;
-            })
-            .style("fill", function(d,i) {
-                return color(i);
-            });
+				.attr("r", function(d) {
+					return d.r;
+				})
+				.style("fill", function(d, i) {
+					return color(i);
+				});
+
 			node.append("text")
 				.attr("dy", ".2em")
 				.style("text-anchor", "middle")
 				.text(function(d) {
+					console.log('text node', d);
 					return d.name;
 				})
 				.attr("font-family", "sans-serif")
 				.attr("font-size", function(d) {
-					return d.r / 5;
+					return d.total / 5;
 				})
 				.attr("fill", "white");
 			node.append("text")

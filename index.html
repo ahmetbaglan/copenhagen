@@ -40,7 +40,7 @@
           Select a metric to explore
         </p>
         <p>
-          <select onchange="update(this)" class="btn btn-default metric">
+          <select onchange="update(this, 'map')" class="btn btn-default metric">
             <option selected value="no_inhabitants">Number of inhabitants</option>
             <option value="avg_income">Average income (DKK/y)</option>
             <option value="avg_age">Average age</option>
@@ -56,7 +56,7 @@
         Select a year
       </p>
       <div class="slidecontainer">
-        <input onchange="updateYear(this)" type="range" list="tickmarks" min="2008" max="2014" value="2008" class="slider" id="years">
+        <input onchange="updateYear(this, 'map')" type="range" list="tickmarks" min="2008" max="2014" value="2008" class="slider" id="years">
         <datalist class="slider-ticks" id="tickmarks">
           <option value="2008" label="2008">
           <option value="2009" label="2009">
@@ -70,83 +70,122 @@
     </div>
 
     <div class="map"></div>
-    <div id="main">
-      <select onchange="aptUpdate(this)" class="btn btn-default metric" id="apartmentDropDown">
+  </div>
+  <div id="main" class="container">
+    <p class="button-row">
+      <div class="col-md-4">
+        <p>
+          Select a metric to explore
+        </p>
+        <p>
+          <select onchange="update(this, 'wheel')" class="btn btn-default metric">
+              <option selected value="no_inhabitants">Number of inhabitants</option>
+              <option value="avg_income">Average income (DKK/y)</option>
+              <option value="avg_age">Average age</option>
+              <option value="no_apartments">Number of apartments</option>
+              <option value="no_companies">Number of companies</option>
+              <option value="no_netto_movings">Number of movings</option>
+            </select>
+        </p>
+    </p>
+    </div>
+    <div class="col-md-8">
+      <p>
+        Select a year
+      </p>
+      <div class="slidecontainer">
+        <input onchange="updateYear(this, 'wheel')" type="range" list="tickmarks" min="2008" max="2014" value="2008" class="slider" id="years">
+        <datalist class="slider-ticks" id="tickmarks">
+            <option value="2008" label="2008">
+            <option value="2009" label="2009">
+            <option value="2010" label="2010">
+            <option value="2011" label="2011">
+            <option value="2012" label="2012">
+            <option value="2013" label="2013">
+            <option value="2014" label="2014">
+          </datalist>
+      </div>
+    </div>
+    <select onchange="aptUpdate(this)" class="btn btn-default metric" id="apartmentDropDown">
         <option selected value="apt_size">Apartment Size</option>
         <option value="apt_age">Apartment Age</option>
         <option value="apt_type">Apartment Type</option>
       </select>
-      <div class="sequence"></div>
-      <div class="chart">
-        <div class="explanation" style="visibility: hidden;">
-          <span class="percentage"></span><br/>
-        </div>
+    <div class="sequence"></div>
+    <div class="chart">
+      <div class="explanation" style="visibility: hidden;">
+        <span class="percentage"></span><br/>
       </div>
-      <div id="sidebar">
-        <input type="checkbox" id="togglelegend"><label>Legend</label><br/>
-        <div id="legend" style="visibility: hidden;"></div>
-      </div>
-      <i class="barChartTitle"> </i>
-      <div class="barChart"></div>
     </div>
+    <div id="sidebar">
+      <input type="checkbox" id="togglelegend"><label>Legend</label><br/>
+      <div id="legend" style="visibility: hidden;"></div>
+    </div>
+    <i class="barChartTitle"> </i>
+    <div class="barChart"></div>
+  </div>
 
 
-    <script type="text/javascript" src="sequences.js"></script>
-    <script type="text/javascript" src="scripts/map.js">
-    </script>
-    <script type "text/javascript">
-      var show = function(tag) {
-        if (tag === 'data') {
-          console.log('data');
-          document.getElementById('data').style.display = 'block';
-          document.getElementById('explainer').style.display = 'none';
-          document.getElementById('data-button').classList.add("selected");
-          document.getElementById('explainer-button').classList.remove("selected");
+  <script type="text/javascript" src="sequences.js"></script>
+  <script type="text/javascript" src="scripts/map.js"></script>
+  <script type "text/javascript">
+    var updateYear = function(obj, viz) {
+      console.log('updating year', obj.value, viz);
 
-        }
-        if (tag === 'explainer') {
-          document.getElementById('data').style.display = 'none';
-          document.getElementById('explainer').style.display = 'block';
-          document.getElementById('explainer-button').classList.add("selected");
-          document.getElementById('data-button').classList.remove("selected");
-        }
+      setYear(obj.value, viz);
+      if (viz === 'wheel') {
+        d3.selectAll(".pieSVG").remove();
+        d3.selectAll(".barSVG").remove();
+        updateCoolPieChart(getYear(viz), getMetric(viz));
       }
-
-      updateCoolPieChart(getYear(), getMetric())
-      var aptUpdate = function(obj) {
-        d3.selectAll(".pieSVG").remove()
-        d3.selectAll(".barSVG").remove()
-        updateAptCoolPieChart(getYear(), obj.value)
-      }
-      var update = function(obj) {
-        d3.selectAll(".pieSVG").remove()
-        d3.selectAll(".barSVG").remove()
-
-        updateCoolPieChart(getYear(), getMetric())
-        var update = function(obj) {
-          d3.selectAll(".pieSVG").remove()
-          d3.selectAll(".barSVG").remove()
-
-          setMetric(obj.value);
-          filterData()
-          setColorDomain();
-          drawMap();
-          updateCoolPieChart(getYear(), getMetric())
-
-        }
-      }
-
-      var updateYear = function(obj) {
-        d3.selectAll(".pieSVG").remove()
-        d3.selectAll(".barSVG").remove()
-        console.log('updating the year');
-        setYear(obj.value);
+      if (viz === 'map') {
         filterData()
         setColorDomain();
         drawMap();
-        updateCoolPieChart(getYear(), getMetric())
       }
-    </script>
+    }
+
+    var show = function(tag) {
+      if (tag === 'data') {
+        document.getElementById('data').style.display = 'block';
+        document.getElementById('explainer').style.display = 'none';
+        document.getElementById('data-button').classList.add("selected");
+        document.getElementById('explainer-button').classList.remove("selected");
+
+      }
+      if (tag === 'explainer') {
+        document.getElementById('data').style.display = 'none';
+        document.getElementById('explainer').style.display = 'block';
+        document.getElementById('explainer-button').classList.add("selected");
+        document.getElementById('data-button').classList.remove("selected");
+      }
+    }
+
+
+    var aptUpdate = function(obj) {
+      d3.selectAll(".pieSVG").remove()
+      d3.selectAll(".barSVG").remove()
+      updateAptCoolPieChart(getYear('wheel'), obj.value)
+    }
+
+    var update = function(obj, viz) {
+      console.log('updating metric', obj.value, viz);
+      d3.selectAll(".pieSVG").remove();
+      d3.selectAll(".barSVG").remove();
+
+      setMetric(obj.value, viz);
+      if (viz === 'map') {
+        filterData();
+        setColorDomain();
+        drawMap();
+      }
+      if (viz === 'wheel') {
+        updateCoolPieChart(getYear(viz), getMetric(viz));
+      }
+    }
+
+    updateCoolPieChart(getYear('wheel'), getMetric('wheel'));
+  </script>
 
 </body>
 

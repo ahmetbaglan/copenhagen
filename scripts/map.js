@@ -1,8 +1,14 @@
 // TODO: auto fit to screen size
 var w = 1000,
   h = 1000,
-  metric = 'no_inhabitants',
-  year = '2008',
+  metric = {
+    map: 'no_inhabitants',
+    wheel: 'no_inhabitants',
+  },
+  year = {
+    map: '2008',
+    wheel: '2008',
+  },
   colors = ['#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b'],
   colorsDiverging = ['#c2a5cf', '#e7d4e8', '#f7f7f7', '#d9f0d3', '#a6dba0', '#5aae61', '#1b7837'],
   path, paths, districts, json, dataset, data;
@@ -10,29 +16,27 @@ var w = 1000,
 // helper to get correct value from data set
 var getColorValue = function (d) {
   var [row] = dataset.filter(function (obj) {
-    return parseInt(obj.district_id) === d.properties.bydel_nr && obj.aar === year;
+    return parseInt(obj.district_id) === d.properties.bydel_nr && obj.aar === year.map;
   });
-  return parseInt(row[metric]);
+  return parseInt(row[metric.map]);
 }
 
 // helper to set the metric here through action in html in other file
-var setMetric = function (value) {
-  metric = value;
+var setMetric = function (value, viz) {
+  metric[viz] = value;
 }
 
-var getMetric = function()
-{
-  return metric;
+var getMetric = function (viz) {
+  return metric[viz];
 }
 
 // helper to set the metric here through action in html in other file
-var setYear = function (value) {
-  year = value;
+var setYear = function (value, viz) {
+  year[viz] = value;
 }
 
-var getYear = function()
-{
-  return +year;
+var getYear = function (viz) {
+  return +year[viz];
 }
 
 // threshold scale
@@ -50,12 +54,12 @@ var setColorDomain = function () {
 
   // min / max values
   var min = dataset.reduce(function (prev, curr) {
-    return parseInt(prev[metric]) < parseInt(curr[metric]) ? prev : curr;
-  })[metric];
+    return parseInt(prev[metric.map]) < parseInt(curr[metric.map]) ? prev : curr;
+  })[metric.map];
 
   var max = dataset.reduce(function (prev, curr) {
-    return parseInt(prev[metric]) > parseInt(curr[metric]) ? prev : curr;
-  })[metric];
+    return parseInt(prev[metric.map]) > parseInt(curr[metric.map]) ? prev : curr;
+  })[metric.map];
 
   console.log('min:', min, 'max:', max);
   // divide up the domain and update scale
@@ -70,7 +74,7 @@ var setColorDomain = function () {
     thresholdScale.range(colors);
   }
   if ((parseFloat(min) + parseFloat(max)) < 1) {
-    console.log('removing legend');
+
     // remove legend
     svg.select(".legendQuant").remove()
     svg.append("g")
@@ -81,11 +85,11 @@ var setColorDomain = function () {
       .text('No data to display.')
 
   } else {
-    console.log('not removing legend');
+
     svg.select(".noData").remove()
     thresholdScale.domain(breaks)
 
-    var format = metric.indexOf('avg') > -1 ? '.2f' : '.0f';
+    var format = metric.map.indexOf('avg') > -1 ? '.2f' : '.0f';
     // append legend
     svg.append("g")
       .attr("class", "legendQuant")
@@ -109,16 +113,14 @@ var click = function (d) {
 
 // filter dataset per years
 var filterData = function () {
-  console.log('year', year);
   dataset = data.filter(function (row) {
-    return row['aar'] === year;
+    return row['aar'] === year.map;
   });
-  console.log('filterted dataset', dataset);
 }
 
 
 var drawMap = function () {
-
+  console.log('drawing for', metric.map);
   // remove elements if exist
   if (paths) {
     paths.remove();
