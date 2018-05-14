@@ -219,11 +219,7 @@
               <option value="no_apartments">Number of apartments</option>
             </select>
         </p>
-        <select onchange="aptUpdate(this)" class="btn btn-default metric" id="apartmentDropDown">
-            <option selected value="apt_size">Apartment Size</option>
-            <option value="apt_age">Apartment Age</option>
-            <option value="apt_type">Apartment Type</option>
-        </select>
+
       </div>
     </p>
 
@@ -244,7 +240,11 @@
           </datalist>
       </div>
     </div>
-
+    <select onchange="aptUpdate(this)" class="btn btn-default metric" id="apartmentDropDown">
+        <option selected value="apt_size">Apartment Size</option>
+        <option value="apt_age">Apartment Age</option>
+        <option value="apt_type">Apartment Type</option>
+    </select>
     <div class="row">
       <div class="col-md-5">
         <div class="sequence"></div>
