@@ -31,6 +31,21 @@
   </div>
   <div class="container" id="explainer" style="display: none">
     <h3>Explainer Page</h3>
+    <h4>Data Collection</h4>
+    <p>
+      For this project, data was collected from multiple different locations using Python. First, a historical dataset on socio econmic status of all districts of the Copenhagen municipality was taken from <a href="https://portal.opendata.dk/dataset/samlede-socio-data-kbh">opendata.dk</a>.
+      This set contains data from 2008 till 2014 on all sorts of socio economic stats like age distribution and how many people work in different sectors. The data was divided by 'rodes' (small subdivisions of districts used for taxes) and we wanted to
+      work on districts, so another data set was taken from the
+      <a href="https://portal.opendata.dk/dataset/roder">portal</a> to convert all rows into their districts. The data was then grouped on district and year with Pandas and a <code>district_id</code> was added for easy reference, since the spelling of
+      Danish brings a lot of character encoding issues. A <a href="https://portal.opendata.dk/dataset/bydele">geojson</a> file was then used to create a map of the districts. Since non of our group members are Danish, quite some time went into translating
+      all variables into English. The final dataset contianed 70 rows (10 districts for 7 years) and 67 columns. Only the counts (and not the ratios) were kept because we had to group all the original 'rodes'.
+    </p>
+    <p>
+      Then, voting data on two municipal elections (2013 &amp; 2017) was scraped from the official <a href="https://www.kmdvalg.dk/main">result website</a>. The page for Copenhagen has the results from every voting office linked below. It was clear that
+      all these pages had similar urls, with only the last two digits changing, ranging from 1 to 55. On every page there was the same table with the number of votes per party which could easily be parsed using Beautiful Soup. With a bit of tinkering,
+      it was possible to map every page id to a district (often around 5 offices per district) and collect all data, merge it per district and write to JSON. This resulted in a dataset with the <code>district_id</code>s as keys and an array of objects
+      as values, each object containing the name of the party, the number of votes and the number of votes lost or gained.
+    </p>
   </div>
   <div class="container" id="data">
     <h3>The Data Story</h3>
@@ -102,9 +117,6 @@
 
     </div>
 
-    <div class="header row">
-
-    </div>
   </div>
   <div id="main" class="container">
     <p>
@@ -158,18 +170,29 @@
         <option value="apt_age">Apartment Age</option>
         <option value="apt_type">Apartment Type</option>
       </select>
-    <div class="sequence"></div>
-    <div class="chart">
-      <div class="explanation" style="visibility: hidden;">
-        <span class="percentage"></span><br/>
+    <div class="row">
+      <div class="col-md-5">
+        <div class="sequence"></div>
+        <div class="chart">
+          <div class="explanation" style="visibility: hidden;">
+            <span class="percentage"></span><br/>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-md-2">
+        <div id="sidebar">
+          <input type="checkbox" id="togglelegend"><label>Legend</label><br/>
+          <div id="legend" style="visibility: hidden;"></div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <i class="barChartTitle"> </i>
+        <div class="barChart"></div>
       </div>
     </div>
-    <div id="sidebar">
-      <input type="checkbox" id="togglelegend"><label>Legend</label><br/>
-      <div id="legend" style="visibility: hidden;"></div>
-    </div>
-    <i class="barChartTitle"> </i>
-    <div class="barChart"></div>
+
+
   </div>
 
 
@@ -198,6 +221,8 @@
     var show = function(tag) {
       if (tag === 'data') {
         document.getElementById('data').style.display = 'block';
+        document.getElementById('main').style.display = 'block';
+
         document.getElementById('explainer').style.display = 'none';
         document.getElementById('data-button').classList.add("selected");
         document.getElementById('explainer-button').classList.remove("selected");
@@ -205,6 +230,7 @@
       }
       if (tag === 'explainer') {
         document.getElementById('data').style.display = 'none';
+        document.getElementById('main').style.display = 'none';
         document.getElementById('explainer').style.display = 'block';
         document.getElementById('explainer-button').classList.add("selected");
         document.getElementById('data-button').classList.remove("selected");

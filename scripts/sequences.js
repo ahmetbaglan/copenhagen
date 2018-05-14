@@ -156,18 +156,19 @@ var showCoolPie = function (year, colors, dataName, mainDiv) {
   var barChartXScale;
   var svgBar;
   var barMargin = {
-    top: 20,
+    top: 50,
     right: 20,
     bottom: 30,
     left: 60
   };
-  var widthBar = 500 - barMargin.left - barMargin.right;
-  var heightBar = 300 - barMargin.top - barMargin.bottom;
+  var widthBar = 340 - barMargin.left - barMargin.right;
+  var heightBar = 400 - barMargin.top - barMargin.bottom;
   // de.("#barChart").selectAll("svg").remove()
   // Dimensions of sunburst.
-  var width = 750;
-  var height = 600;
+  var width = 500;
+  var height = 400;
   var radius = Math.min(width, height) / 2;
+  console.log('w', width, 'h', height, 'r', radius);
 
   // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
   var b = {
