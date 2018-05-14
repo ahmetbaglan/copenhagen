@@ -179,7 +179,12 @@ var drawMap = function () {
 // load map asynchronously
 d3.json("data/copenhagen.geojson", function (geodata) {
   json = geodata;
+  console.log(json);
+  var districtNames = json.features.map(function (d) {
+    return d.properties.navn;
 
+  })
+  document.getElementById('district-list').innerHTML = districtNames.join(', ')
   // scale and center
   var center = d3.geoCentroid(json)
   var scale = 200000;

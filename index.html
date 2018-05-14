@@ -51,8 +51,22 @@
     <h3>The Data Story</h3>
 
     <p>
-      Copenhagen is one of the best cities in the world. What makes Copenhagen this good is people living here. There are mainly 10 districts in Copenhagen. Each district is special on its own.
+      Copenhagen is a highly diverse global city with a lot of different people living in it, that all have different socio economic statuses and voting preferences. We build a tool to visually explore Copenhagen on a district level and look into these data
+      from many different perspectives and across many different dimensions. Hopefully, this will provide some insights into what moves the people of Copenhagen and can this ultimately be used to guide decision making or political activity.
     </p>
+    <p>
+      This story contains multiple parts. First, there is the overview from a geographical viewpoint. A map of the 10 main districts of the Copenghagen municipality shows the differnce in numbers per district for a selected metric, like average age, income
+      or non Danish migrants. Use the horizontal slider to see how these numbers have changed over the last years. Pro tip: after clicking on the slider, use your arrow keys to scan through it and really see the changes.
+    </p>
+    <p>
+      The districts are <span style="font-weight: 400" id="district-list">.</span>
+    </p>
+    <p>
+      Then, a more detailed view is provided for every district, which can be shown by clicking on a district on the map. This shows an overview of the municipal election result from 2013 &amp; 2017 and a year wise breakdown of some distributions of age, income,
+      migration background and job sector. Here, some real observations can be made on the relationship between --changes in-- demohraphics and the resulting voting behaviour. Since most districts have been growing as Copenhagen, the combined numbers
+      are usually rising. Interesting to look at would be the changes in income or migration background and rise of votes for populist parties or income and job sectors indicating gentrification and the popularity of progressive or green parties.
+    </p>
+
     <p class="button-row">
       <div class="col-md-4">
         <p>
@@ -66,6 +80,9 @@
             <option value="no_apartments">Number of apartments</option>
             <option value="no_companies">Number of companies</option>
             <option value="no_netto_movings">Number of movings</option>
+            <option value="no_non_western">
+              Number of Non-western immigrants
+            </option>
           </select>
         </p>
     </p>
@@ -108,6 +125,12 @@
           <select onchange="update(this, 'district')" class="btn btn-default metric">
             <option selected value="income">Income</option>
             <option value="age">Age</option>
+            <option value="migration">
+              Migration Background
+            </option>
+            <option value="profession">
+              Job Sector
+            </option>
           </select>
         </div>
       </div>
@@ -120,18 +143,14 @@
   </div>
   <div id="main" class="container">
     <p>
-      So map is one way to see the city. Another way is by sun burst chart. But take your seat because this is a very special chart. Everything in the chart is totally interactive. You can filter any data in this chart. For example go ahead and choose Brønshøj~Husum
-      (The red area in the inner circle).
+      The map is one way to see the city, another way is by sun burst chart. Take a seat, because this is a very special chart. Everything in the chart is interactive and you can filter any data in this chart. For example, go ahead and choose Brønshøj~Husum
+      (The red area in the inner circle). You see the population here is more or less stable. Now choose orange area just above the red one. If you made it this far, you should be seeing change in the number of people who are single in Brønshøj~Husum.
+      You can go on and choose the blue above this one. Now you are seeing the change in the number of people who are single and who do not have children. For example, you can go and see the increase in high income people in Nørrebro, or you can see percentage
+      of apartments from before 19000 in Østerbro.
     </p>
     <p>
-      You see the population here is more or less stable. Now choose orange area just above the red one.
-    </p>
-    <p>
-      If you could make it this far now you should be seeing change in the number of persons who are single in Brønshøj~Husum. You can go on and choose blue are above this one now you are seeing the change in the number of persons who are single and who do
-      not have kid.
-    </p>
-
-    For example you can go and see the increase in high income persons in Norrebro or you can see percentage of 100 years old apartments in Osterbro.
+      This provides a whole new overview and way to look at things, again with the option to look at different metrics for different years. When you click on a specific stat, you'll see a bar chart showing how the total number of that stat has changed over
+      time.
     </p>
     <p class="button-row">
       <div class="col-md-4">

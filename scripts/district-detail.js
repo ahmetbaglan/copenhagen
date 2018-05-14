@@ -26,7 +26,14 @@ var getCurrentDistrict = function () {
 var variables = {
   age: ['no_age_0_5', 'no_age_6_17', 'no_age_18_29', 'no_age_30_39', 'no_age_40_49', 'no_age_50_64', 'no_age_over_65'],
   income: ['no_low_income', 'no_middle_income', 'no_high_income'],
-  profession: ['']
+  profession: ['no_entrepreneurs', 'no_trade_transport',
+    'no_information_communication', 'no_finance_insurance',
+    'no_real_estate_rental', 'no_business_service',
+    'no_public_administration', 'no_teaching',
+    'no_health_social_service', 'no_cultural_services',
+    'no_agriculture'
+  ],
+  migration: ['no_danish', 'no_western', 'no_non_western'],
 };
 
 //Set up stack method
