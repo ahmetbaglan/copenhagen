@@ -1,6 +1,6 @@
-var padding = 30,
-  widthStack = 960,
-  heightStack = 500,
+var padding = 25,
+  widthStack = 450,
+  heightStack = 400,
   dataset, xAxis, yAxis, xAxisViz, yAxisViz, area, dataRaw, svgDistrict, districtPaths;
 
 var stackMetric = 'income';
@@ -25,6 +25,7 @@ var getCurrentDistrict = function () {
 var variables = {
   age: ['no_age_6_17', 'no_age_6_17', 'no_age_18_29', 'no_age_30_39', 'no_age_40_49', 'no_age_50_64', 'no_age_over_65'],
   income: ['no_low_income', 'no_middle_income', 'no_high_income'],
+  profession: ['']
 };
 
 //Set up stack method
@@ -87,7 +88,6 @@ var drawDistrictDetail = function () {
 
   //Stack the data and log it out
   var series = stack(dataset);
-  console.log(series);
   xScale.domain([
     d3.min(dataset, function (d) {
       // console.log(d.aar);
@@ -117,28 +117,10 @@ var drawDistrictDetail = function () {
     svgDistrict
       .remove();
 
-    // districtPaths = d3.selectAll(".district-detail path")
-    //   .data(series);
-    // console.log(districtPaths);
-    //
-    // var areaTransitions = districtPaths.transition()
-    //   .duration(1000)
-    //   .attr("d", area)
-    //   .attr("fill", function (d, i) {
-    //     return d3.schemeCategory20[i];
-    //   });
-    //
     yAxisViz
       .transition()
       .duration(1000)
       .call(d3.axisLeft(yScale));
-    //
-    // //Append this transition to the one already in progress
-    // //(from above).  Transition areas to newly updated scale.
-    // areaTransitions.transition()
-    //   .delay(200)
-    //   .duration(1000)
-    //   .attr("d", area);
 
   }
   svgDistrict = d3.select('.district-detail')
@@ -164,10 +146,6 @@ var drawDistrictDetail = function () {
       return d.key;
     });
 
-
-
-
-  console.log('inital districtPaths', districtPaths);
   //Create axes
   xAxisViz = svgDistrict.append("g")
     .attr("class", "axis x")
@@ -178,11 +156,4 @@ var drawDistrictDetail = function () {
     .attr("class", "axis y")
     .attr("transform", "translate(" + (widthStack - padding * 2) + ",0)")
     .call(yAxis);
-
-
-
-
-
-
-
 }

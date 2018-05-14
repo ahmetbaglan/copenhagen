@@ -74,25 +74,37 @@
     </div>
 
     <div class="map"></div>
-    <div class="bubbleDiv">
-      <form name="formA">
-        <input type="radio" name="myradio" value="2013" checked="checked" /> 2013
-        <input type="radio" name="myradio" value="2017" /> 2017
-      </form>
+    <div class="row">
+      <div class="row">
+        <h3 <spanid="district-name">Indre By</span> Overview</h3>
+        <form name="formA" class="col-md-6" style="padding: none">
+          <h4>
+            Municpal Elections
+          </h4>
+          <p>Select a year to explore results from</p>
+          <input type="radio" name="myradio" value="2013" checked="checked" /> 2013
+          <input type="radio" name="myradio" value="2017" /> 2017
+        </form>
+        <div class="col-md-6" style="padding: none">
+          <h4>
+            Change in demographics 2008 - 2014
+          </h4>
+          <p>Select a distribution to explore</p>
+          <select onchange="update(this, 'district')" class="btn btn-default metric">
+            <option selected value="income">Income</option>
+            <option value="age">Age</option>
+          </select>
+        </div>
+      </div>
+      <div id='bubbleChart' class="col-md-6"></div>
+      <div class="district-detail col-md-6"></div>
 
-      <div id='bubbleChart'></div>
+
     </div>
 
     <div class="header row">
-      <div class="col-md-4">
-        <label>Select a distribution to explore for <span id="district-name">Indre By</span></label>
-        <select onchange="update(this, 'district')" class="btn btn-default metric">
-          <option selected value="income">Income</option>
-          <option value="age">Age</option>
-        </select>
-      </div>
+
     </div>
-    <div class="district-detail"></div>
   </div>
   <div id="main" class="container">
     <p>
