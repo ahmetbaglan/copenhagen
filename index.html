@@ -74,6 +74,15 @@
     </div>
 
     <div class="map"></div>
+    <div class="bubbleDiv">
+      <form name="formA">
+        <input type="radio" name="myradio" value="2013" checked="checked" /> 2013
+        <input type="radio" name="myradio" value="2017" /> 2017
+      </form>
+
+      <div id='bubbleChart'></div>
+    </div>
+
     <div class="header row">
       <div class="col-md-4">
         <label>Select a distribution to explore for <span id="district-name">Indre By</span></label>
@@ -98,8 +107,7 @@
       not have kid.
     </p>
 
-    <p>
-      You can take this as far as you want. For example you can go and see the increase in high income persons in Norrebro or you can see percentage of 100 years old apartments in Osterbro.
+    For example you can go and see the increase in high income persons in Norrebro or you can see percentage of 100 years old apartments in Osterbro.
     </p>
     <p class="button-row">
       <div class="col-md-4">
@@ -153,10 +161,12 @@
   </div>
 
 
-  <script type="text/javascript" src="sequences.js"></script>
+  <script type="text/javascript" src="scripts/sequences.js"></script>
   <script type="text/javascript" src="scripts/map.js"></script>
+  <script type="text/javascript" src="scripts/bubble.js"></script>
   <script type="text/javascript" src="scripts/district-detail.js"></script>
   <script type "text/javascript">
+    var lastClickedDistrict;
     var updateYear = function(obj, viz) {
       console.log('updating year', obj.value, viz);
 

@@ -108,10 +108,19 @@ var setColorDomain = function () {
 }
 
 var click = function (d) {
+  lastClickedDistrict = d.properties.bydel_nr;
+  console.log(lastClickedDistrict + 'lllllllllllllll')
+  bubbleFunction(selectedYearOnRadio,lastClickedDistrict)
   console.log(d);
+<<<<<<< HEAD
   setCurrentDistrict(d.properties.bydel_nr)
   document.getElementById('district-name').innerHTML = d.properties.navn
   drawDistrictDetail()
+=======
+  // console.log(selectedYearOnRadio)
+
+
+>>>>>>> 5b9280f1030e0980bb5a59d35664b64f02192594
 }
 
 // filter dataset per years
