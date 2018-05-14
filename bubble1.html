@@ -20,127 +20,128 @@
 		</div>
 	</div>
 	<script type="text/javascript">
+		var bubbleFunction = function(district, year) {
+			d3.select(".bubble").selectAll("*").remove()
+
+			// set dataset as global variable to reference everywhere
+			// set year so can easily be changed and altered
+			// use 'current' district ID
+			var dataset;
+			// district = 6,
+			// year = '2017';
+			// global settings
+			var diameter = 600;
+			var color = d3.scaleOrdinal(d3.schemeCategory20);
+			var svg = d3.select(".bubble")
+				.append("svg")
+				.attr("width", diameter)
+				.attr("height", diameter)
+				.attr("class", "bubble");
+			// load data asynchronously
+			d3.json('data/' + year + '_final.json', function(data) {
+				// look at data
+				console.log(data);
+				// filter for current selected district
+				dataset = data[district]
+				console.log(dataset);
+				var bubble = d3.pack(dataset)
+					.size([diameter, diameter])
+					.padding(1.5);
+				// scale
+				var scaleRadius = d3.scaleLinear()
+					.domain([d3.min(dataset, function(d) {
+							return +d.total;
+						}),
+						d3.max(dataset, function(d) {
+							return +d.total;
+						})
+					])
+					.range([8, 60]);
 
 
-var bubbleFunction = function(district, year)
-{
-	d3.select(".bubble").selectAll("*").remove()
+				// the nodes of the network
+				var nodes = d3.forceSimulation(dataset)
+					.force("charge", d3.forceManyBody().strength([-40]))
+					.force("x", d3.forceX())
+					.force("y", d3.forceY())
+					.force("center", d3.forceCenter().x(diameter * .5).y(diameter * .5))
 
-	// set dataset as global variable to reference everywhere
-	// set year so can easily be changed and altered
-	// use 'current' district ID
-	var dataset;
-		// district = 6,
-		// year = '2017';
-	// global settings
-	var diameter = 600;
-	var color = d3.scaleOrdinal(d3.schemeCategory20);
-	var svg = d3.select(".bubble")
-		.append("svg")
-		.attr("width", diameter)
-		.attr("height", diameter)
-		.attr("class", "bubble");
-	// load data asynchronously
-	d3.json('data/' + year + '_final.json', function(data) {
-		// look at data
-		console.log(data);
-		// filter for current selected district
-		dataset = data[district]
-		console.log(dataset);
-		var bubble = d3.pack(dataset)
-			.size([diameter, diameter])
-			.padding(1.5);
-		// scale
-		var scaleRadius = d3.scaleLinear()
-			.domain([d3.min(dataset, function(d) {
-					return +d.total;
-				}),
-				d3.max(dataset, function(d) {
-					return +d.total;
-				})
-			])
-			.range([8, 60]);
-		// the nodes of the network
-		var nodes = d3.forceSimulation(dataset)
-			.force("charge", d3.forceManyBody().strength([-40]))
-			.force("x", d3.forceX())
-			.force("y", d3.forceY())
-			.on("tick", ticked);
-		// append the actual circles
-		var node = svg.selectAll("g")
-			.data(dataset)
-			.enter()
-			.append("g")
-			.append("circle")
-			.attr('r', function(d) {
-				return scaleRadius(d.total)
-			}).style("fill", function(d, i) {
-				return color(i);
-			});
+					.on("tick", ticked);
+				// append the actual circles
+				var node = svg.selectAll(".node")
+					.data(dataset)
+					.enter()
+					.append("g")
+					.append("circle")
+					.attr('r', function(d) {
+						return scaleRadius(d.total)
+					}).style("fill", function(d, i) {
+						return color(i);
+					});
 
-			svg.selectAll("g").append("text").attr("transform", function(d) {
-				return "translate(" + (d.x - scaleRadius(d.total) ) + "," + (d.y -scaleRadius(d.total) ) + ")";
-			}).text(function(d){return d.name})
+				// svg.selectAll("g").append("text").attr("transform", function(d) {
+				// 	return "translate(" + (d.x - scaleRadius(d.total)) + "," + (d.y - scaleRadius(d.total)) + ")";
+				// }).text(function(d) {
+				// 	return d.name
+				// })
+				//
+				// svg.selectAll("g").attr("transform", function(d) {
+				// 	return "translate(" + (d.x + diameter / 2) + "," + (d.y + diameter / 2) + ")";
+				// })
 
-				svg.selectAll("g").attr("transform", function(d) {
-					return "translate(" + (d.x + diameter / 2) + "," + (d.y + diameter / 2) + ")";
-				})
+				// get the coordinates of the nodes
+				function ticked(e) {
+					node.attr("cx", function(d) {
+							return d.x;
+						})
+						.attr("cy", function(d) {
+							return d.y;
+						});
+					// 'node' is each circle of the bubble chart
+				}
+				node.append("title")
+					.text(function(d) {
+						return d.name + ": " + d.total;
+					});
+				// node.append("circle")
+				// 	.attr("r", function(d) {
+				// 		return d.r;
+				// 	})
+				// 	.style("fill", function(d, i) {
+				// 		return color(i);
+				// 	});
 
-		// get the coordinates of the nodes
-		function ticked(e) {
-			node.attr("cx", function(d) {
-					return d.x;
-				})
-				.attr("cy", function(d) {
-					return d.y;
-				});
-			// 'node' is each circle of the bubble chart
+				node.append("text")
+					.attr("dy", ".2em")
+					.style("text-anchor", "middle")
+					.text(function(d) {
+						console.log('text node', d.name);
+						return d.name;
+					})
+					.attr("font-family", "sans-serif")
+					.attr("font-size", function(d) {
+						return d.total / 5;
+					})
+					.attr("fill", "white");
+				node.append("text")
+					.attr("dy", "1.3em")
+					.style("text-anchor", "middle")
+					.text(function(d) {
+						return d.total;
+					})
+					.attr("font-family", "Gill Sans", "Gill Sans MT")
+					.attr("font-size", function(d) {
+						return d.r / 5;
+					})
+					.attr("fill", "green");
+			})
+			d3.select(self.frameElement)
+				.style("height", diameter + "px");
+
 		}
-		node.append("title")
-			.text(function(d) {
-				return d.name + ": " + d.total;
-			});
-		node.append("circle")
-			.attr("r", function(d) {
-				return d.r;
-			})
-			.style("fill", function(d, i) {
-				return color(i);
-			});
-
-		node.append("text")
-			.attr("dy", ".2em")
-			.style("text-anchor", "middle")
-			.text(function(d) {
-				console.log('text node', d);
-				return d.name;
-			})
-			.attr("font-family", "sans-serif")
-			.attr("font-size", function(d) {
-				return d.total / 5;
-			})
-			.attr("fill", "white");
-		node.append("text")
-			.attr("dy", "1.3em")
-			.style("text-anchor", "middle")
-			.text(function(d) {
-				return d.total;
-			})
-			.attr("font-family", "Gill Sans", "Gill Sans MT")
-			.attr("font-size", function(d) {
-				return d.r / 5;
-			})
-			.attr("fill", "green");
-	})
-	d3.select(self.frameElement)
-		.style("height", diameter + "px");
-
-}
 
 
-bubbleFunction(6,'2017')
-
-
+		bubbleFunction(6, '2017')
 	</script>
 </body>
 

@@ -109,6 +109,9 @@ var setColorDomain = function () {
 
 var click = function (d) {
   console.log(d);
+  setCurrentDistrict(d.properties.bydel_nr)
+  document.getElementById('district-name').innerHTML = d.properties.navn
+  drawDistrictDetail()
 }
 
 // filter dataset per years

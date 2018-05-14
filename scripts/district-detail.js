@@ -1,7 +1,7 @@
 var padding = 30,
   widthStack = 960,
   heightStack = 500,
-  dataset, xAxis, yAxis, xAxisViz, yAxisViz, area, dataRaw, svgDistrict, paths;
+  dataset, xAxis, yAxis, xAxisViz, yAxisViz, area, dataRaw, svgDistrict, districtPaths;
 
 var stackMetric = 'income';
 var currentDistrictID = 1
@@ -12,6 +12,14 @@ var getStackMetric = function () {
 
 var setStackMetric = function (metric) {
   stackMetric = metric;
+}
+
+var setCurrentDistrict = function (id) {
+  currentDistrictID = id;
+}
+
+var getCurrentDistrict = function () {
+  return currentDistrictID;
 }
 
 var variables = {
@@ -60,11 +68,12 @@ d3.csv('data/merged_socia_ecomic_per_year_per_district_EN_with_ID.csv', function
   dataRaw = data;
   drawDistrictDetail()
 })
-
 var drawDistrictDetail = function () {
   dataset = dataRaw.filter(function (d) {
     return parseInt(d.district_id) === currentDistrictID;
   });
+
+  console.log('drawing district detail for ', currentDistrictID);
 
   var keys = ['aar'].concat(variables[stackMetric])
   var values = variables[stackMetric];
@@ -103,71 +112,73 @@ var drawDistrictDetail = function () {
       })
     ])
     .nice();
-  console.log(yScale.domain());
 
   if (svgDistrict) {
-    console.log('paths', paths);
-    paths.exit()
-      .transition().duration(750)
+    svgDistrict
       .remove();
 
-    paths = d3.selectAll(".district-detail path")
-      .data(series);
-
-    var areaTransitions = paths.transition()
-      .duration(1000)
-      .attr("d", area)
-      .attr("fill", function (d, i) {
-        return d3.schemeCategory20[i];
-      });
-
+    // districtPaths = d3.selectAll(".district-detail path")
+    //   .data(series);
+    // console.log(districtPaths);
+    //
+    // var areaTransitions = districtPaths.transition()
+    //   .duration(1000)
+    //   .attr("d", area)
+    //   .attr("fill", function (d, i) {
+    //     return d3.schemeCategory20[i];
+    //   });
+    //
     yAxisViz
       .transition()
       .duration(1000)
       .call(d3.axisLeft(yScale));
-
-    //Append this transition to the one already in progress
-    //(from above).  Transition areas to newly updated scale.
+    //
+    // //Append this transition to the one already in progress
+    // //(from above).  Transition areas to newly updated scale.
     // areaTransitions.transition()
     //   .delay(200)
     //   .duration(1000)
     //   .attr("d", area);
 
-    console.log(paths);
-
-
-  } else {
-    svgDistrict = d3.select('.district-detail')
-      .append('svg')
-      .attr('width', widthStack)
-      .attr('height', heightStack);
-
-    //Create areas
-    paths = svgDistrict.selectAll("path")
-      .data(series)
-      .enter()
-      .append("path")
-      .attr("class", "area")
-      .attr("d", area)
-      .attr("fill", function (d, i) {
-        return d3.schemeCategory20[i];
-      })
-      .append("title") //Make tooltip
-      .text(function (d) {
-        return d.key;
-      });
-    console.log('inital paths', paths);
-    //Create axes
-    xAxisViz = svgDistrict.append("g")
-      .attr("class", "axis x")
-      .attr("transform", "translate(0," + (heightStack - padding) + ")")
-      .call(xAxis);
-
-    yAxisViz = svgDistrict.append("g")
-      .attr("class", "axis y")
-      .attr("transform", "translate(" + (widthStack - padding * 2) + ",0)")
-      .call(yAxis);
   }
+  svgDistrict = d3.select('.district-detail')
+    .append('svg')
+    .attr('width', widthStack)
+    .attr('height', heightStack);
+
+  //Create areas
+  districtPaths = svgDistrict.selectAll("path")
+    .data(series)
+    .enter()
+    .append("path")
+    .attr("class", "area")
+    .attr("d", area)
+    .attr("fill", function (d, i) {
+      return d3.schemeCategory20[i];
+    })
+    .append("text")
+    .attr("dy", 5)
+    .text(d => d.key)
+    .append("title") //Make tooltip
+    .text(function (d) {
+      return d.key;
+    });
+
+
+
+
+  console.log('inital districtPaths', districtPaths);
+  //Create axes
+  xAxisViz = svgDistrict.append("g")
+    .attr("class", "axis x")
+    .attr("transform", "translate(0," + (heightStack - padding) + ")")
+    .call(xAxis);
+
+  yAxisViz = svgDistrict.append("g")
+    .attr("class", "axis y")
+    .attr("transform", "translate(" + (widthStack - padding * 2) + ",0)")
+    .call(yAxis);
+
 
 
 
