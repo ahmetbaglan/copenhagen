@@ -1,5 +1,6 @@
-var padding = 25,
-  widthStack = 450,
+var paddingLeft = 255,
+  padding = 25,
+  widthStack = 650,
   heightStack = 400,
   dataset, xAxis, yAxis, xAxisViz, yAxisViz, area, dataRaw, svgDistrict, districtPaths;
 
@@ -23,7 +24,7 @@ var getCurrentDistrict = function () {
 }
 
 var variables = {
-  age: ['no_age_6_17', 'no_age_6_17', 'no_age_18_29', 'no_age_30_39', 'no_age_40_49', 'no_age_50_64', 'no_age_over_65'],
+  age: ['no_age_0_5', 'no_age_6_17', 'no_age_18_29', 'no_age_30_39', 'no_age_40_49', 'no_age_50_64', 'no_age_over_65'],
   income: ['no_low_income', 'no_middle_income', 'no_high_income'],
   profession: ['']
 };
@@ -37,7 +38,7 @@ var parseTime = d3.timeParse("%Y");
 var formatTime = d3.timeFormat("%b %Y");
 
 var xScale = d3.scaleTime()
-  .range([padding, widthStack - padding * 2]);
+  .range([padding, widthStack - paddingLeft]);
 
 var yScale = d3.scaleLinear()
   .range([heightStack - padding, padding / 2])
@@ -113,6 +114,11 @@ var drawDistrictDetail = function () {
     ])
     .nice();
 
+  var colors = values.map(function (d, i) {
+    return d3.schemeCategory20[i];
+  });
+
+
   if (svgDistrict) {
     svgDistrict
       .remove();
@@ -127,6 +133,31 @@ var drawDistrictDetail = function () {
     .append('svg')
     .attr('width', widthStack)
     .attr('height', heightStack);
+
+  var colorScale = d3.scaleOrdinal()
+    .domain(values.map(function (c) {
+      var splitted = c.split('_')
+      console.log('splitted', splitted);
+      return splitted.slice(1, splitted.length).join(' ')
+    }))
+    .range(colors);
+
+  var legendOffset = widthStack - 32 * values.length;
+
+
+  var legend = d3.legendColor()
+    .shapeWidth(30)
+    .cells(values.length)
+    .orient("vertical")
+    .scale(colorScale)
+
+  svgDistrict.append("g")
+    .attr("class", "legend")
+    .attr("transform", "translate(" + 400 + ",0)");
+
+  var legend = svgDistrict.select(".legend")
+    .call(legend);
+  console.log('legend', legend);
 
   //Create areas
   districtPaths = svgDistrict.selectAll("path")
@@ -154,6 +185,6 @@ var drawDistrictDetail = function () {
 
   yAxisViz = svgDistrict.append("g")
     .attr("class", "axis y")
-    .attr("transform", "translate(" + (widthStack - padding * 2) + ",0)")
+    .attr("transform", "translate(" + (widthStack - padding + paddingLeft) + ",0)")
     .call(yAxis);
 }

@@ -1,6 +1,6 @@
 // TODO: auto fit to screen size
 var w = 1000,
-  h = 1000,
+  h = 900,
   metric = {
     map: 'no_inhabitants',
     wheel: 'no_inhabitants',
@@ -109,9 +109,7 @@ var setColorDomain = function () {
 
 var click = function (d) {
   lastClickedDistrict = d.properties.bydel_nr;
-  console.log(lastClickedDistrict + 'lllllllllllllll')
   bubbleFunction(selectedYearOnRadio, lastClickedDistrict)
-  console.log(d);
   setCurrentDistrict(d.properties.bydel_nr)
   document.getElementById('district-name').innerHTML = d.properties.navn
   drawDistrictDetail()
@@ -185,7 +183,7 @@ d3.json("data/copenhagen.geojson", function (geodata) {
   // scale and center
   var center = d3.geoCentroid(json)
   var scale = 200000;
-  var offset = [-627.8 * w, 470.4 * h];
+  var offset = [-627.8 * 1000, 470.4 * 1000];
   var projection = d3.geoMercator()
     .center(center)
     .translate(offset)
