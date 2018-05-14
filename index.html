@@ -31,7 +31,7 @@
   </div>
   <div class="container" id="explainer" style="display: none">
     <h3>Explainer Page</h3>
-    <h4>Data Collection</h4>
+    <h4><b>Data Collection</b></h4>
     <p>
       For this project, data was collected from multiple different locations using Python. First, a historical dataset on socio econmic status of all districts of the Copenhagen municipality was taken from <a href="https://portal.opendata.dk/dataset/samlede-socio-data-kbh">opendata.dk</a>.
       This set contains data from 2008 till 2014 on all sorts of socio economic stats like age distribution and how many people work in different sectors. The data was divided by 'rodes' (small subdivisions of districts used for taxes) and we wanted to
@@ -46,6 +46,68 @@
       it was possible to map every page id to a district (often around 5 offices per district) and collect all data, merge it per district and write to JSON. This resulted in a dataset with the <code>district_id</code>s as keys and an array of objects
       as values, each object containing the name of the party, the number of votes and the number of votes lost or gained.
     </p>
+    <h4><b>Visualisations</b></h4>
+<p>
+  Following the rules described at the lectures, in the project we did our best to choose
+  intuitive visualisations. In the main page we mainly have <b>5</b> different visualisations.
+</p>
+
+<p>
+  Firstly, <b>map</b> is the most intuitive way to display information about a city. Above map
+  you can see a slider and also the type of data (Age, Income etc.) can be set through a dropdow menu.
+  Map is color coded and a legend is provided. The basic intention here was to provide user a
+  way to analyze any geographical clustering in any feature.
+</p>
+<p>
+  When the visitor clicks an area he/she can see a change on 2 different visualizations below. A <b>bubble
+  chart</b> displaying the results of the political elections and a <b>stack chart</b> displaying yearly change in the
+  district.
+</p>
+<p>
+  Since there are a lot of political parties, a <b>bubble chart</b> was an intuitive selection. This is because
+  it is possible to see a lot of elements on the same layout at this kind of visualisaton. Here  we have paid
+  attention to give same colors to the same political parties. Also note that we have filtered only parties which
+  have obtained more than 1% of the votes in the district. This is because there are 32 parties in total and
+  it is not ideal to give proportionally bigger space to parties which did not obtain 1% of the votes.
+</p>
+<p>
+  The second chart updated by the map is <b>Stack Area Chart</b>. This chart shows yearly change of the feature selected.
+  The main intention here was to show user the change of the district by time.
+</p>
+<p>
+  <p>
+    So map is one way to see the city. Another way is by <b>sun burst chart</b>.  Everything in the chart is totally interactive. You can filter any data in this chart
+    and see the yearly distribution of the filtered data at the bar chart below. For example if you click to the inner layer of the chart
+    you would see the distribution of the feature by district (ie only population). However while going outer layers, you can see extra filters
+    and when you click to these areas you would see the change in the filterd data.
+</p>
+<p>
+  Since our data mainly shows distributions (i.e high income-middle income - lower incom) <b>sun burst chart</b>
+  was just a natural choice. The user easily can see the percentage of high income people at some area. The user also can easily
+  see layers. For example can compare the number of "singles" in a district and the number of "single who have kids". The main
+  drawback of the sunburst chart is that it contains a lot of different areas thus it is very hard to keep a minimalistic approach.
+</p>
+
+<p>
+  Finally, even though bar chart is the very basic style <b>bar chart</b> it is always one of the most
+  intuitive ways to put time series information. Note that the color of the bars are same with the
+  chosen area (where data was filtered at <b>sun burst chart</b>) <p>
+
+
+<h4><b>Contributions</b></h4>
+<p>
+ <b>Ahmet Baglan</b>: Sun Burst Chart, Bar Chart, Bubble Chart, Explainer Page.
+</p>
+<p>
+ <b>Wisse Barkhof</b>: Data Collection, General Structure of the Webpage, Data Story, Map Visualisation, Stack Chart.
+</p>
+<p>
+ <b>Siddharth Chopde</b>:Putting the page online.
+</p>
+
+
+
+
   </div>
   <div class="container" id="data">
     <h3>The Data Story</h3>
