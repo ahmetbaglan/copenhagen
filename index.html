@@ -70,6 +70,16 @@
     </div>
 
     <div class="map"></div>
+    <div class="header row">
+      <div class="col-md-4">
+        <label>Select a distribution to explore for {{district}}</label>
+        <select onchange="update(this, 'district')" class="btn btn-default metric">
+          <option selected value="income">Income</option>
+          <option value="age">Age</option>
+        </select>
+      </div>
+    </div>
+    <div class="district-detail"></div>
   </div>
   <div id="main" class="container">
     <p class="button-row">
@@ -128,6 +138,7 @@
 
   <script type="text/javascript" src="sequences.js"></script>
   <script type="text/javascript" src="scripts/map.js"></script>
+  <script type="text/javascript" src="scripts/district-detail.js"></script>
   <script type "text/javascript">
     var updateYear = function(obj, viz) {
       console.log('updating year', obj.value, viz);
@@ -174,6 +185,10 @@
       d3.selectAll(".barSVG").remove();
 
       setMetric(obj.value, viz);
+      if (viz === 'district') {
+        setStackMetric(obj.value);
+        drawDistrictDetail();
+      }
       if (viz === 'map') {
         filterData();
         setColorDomain();
