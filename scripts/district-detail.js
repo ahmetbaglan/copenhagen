@@ -1,9 +1,9 @@
 var padding = 30,
   widthStack = 960,
   heightStack = 500,
-  dataset, xAxis, yAxis, area, dataRaw, svgDistrict;
+  dataset, xAxis, yAxis, xAxisViz, yAxisViz, area, dataRaw, svgDistrict, paths;
 
-var stackMetric = 'age';
+var stackMetric = 'income';
 var currentDistrictID = 1
 
 var getStackMetric = function () {
@@ -106,17 +106,35 @@ var drawDistrictDetail = function () {
   console.log(yScale.domain());
 
   if (svgDistrict) {
-    svgDistrict.exit()
+    console.log('paths', paths);
+    paths.exit()
       .transition().duration(750)
       .remove();
-    console.log(svg);
 
-    var paths = d3.selectAll(".district-detail")
+    paths = d3.selectAll(".district-detail path")
       .data(series);
 
     var areaTransitions = paths.transition()
       .duration(1000)
-      .attr("d", area);
+      .attr("d", area)
+      .attr("fill", function (d, i) {
+        return d3.schemeCategory20[i];
+      });
+
+    yAxisViz
+      .transition()
+      .duration(1000)
+      .call(d3.axisLeft(yScale));
+
+    //Append this transition to the one already in progress
+    //(from above).  Transition areas to newly updated scale.
+    // areaTransitions.transition()
+    //   .delay(200)
+    //   .duration(1000)
+    //   .attr("d", area);
+
+    console.log(paths);
+
 
   } else {
     svgDistrict = d3.select('.district-detail')
@@ -125,7 +143,7 @@ var drawDistrictDetail = function () {
       .attr('height', heightStack);
 
     //Create areas
-    svgDistrict.selectAll("path")
+    paths = svgDistrict.selectAll("path")
       .data(series)
       .enter()
       .append("path")
@@ -138,20 +156,22 @@ var drawDistrictDetail = function () {
       .text(function (d) {
         return d.key;
       });
+    console.log('inital paths', paths);
+    //Create axes
+    xAxisViz = svgDistrict.append("g")
+      .attr("class", "axis x")
+      .attr("transform", "translate(0," + (heightStack - padding) + ")")
+      .call(xAxis);
+
+    yAxisViz = svgDistrict.append("g")
+      .attr("class", "axis y")
+      .attr("transform", "translate(" + (widthStack - padding * 2) + ",0)")
+      .call(yAxis);
   }
 
 
 
 
 
-  //Create axes
-  svgDistrict.append("g")
-    .attr("class", "axis x")
-    .attr("transform", "translate(0," + (heightStack - padding) + ")")
-    .call(xAxis);
 
-  svgDistrict.append("g")
-    .attr("class", "axis y")
-    .attr("transform", "translate(" + (widthStack - padding * 2) + ",0)")
-    .call(yAxis);
 }
