@@ -78,10 +78,10 @@ var bubbleFunction = function(district, year)
 				return color(i);
 			});
 
-			// svg.selectAll("g").append("text").attr("transform", function(d) {
-			// 	return "translate(" + (d.x - scaleRadius(d.total) ) + "," + (d.y -scaleRadius(d.total) ) + ")";
-			// }).text(function(d){return d.name})
-			//
+			svg.selectAll("g").append("text").attr("transform", function(d) {
+				return "translate(" + (d.x - scaleRadius(d.total) ) + "," + (d.y -scaleRadius(d.total) ) + ")";
+			}).text(function(d){return d.name})
+
 				svg.selectAll("g").attr("transform", function(d) {
 					return "translate(" + (d.x + diameter / 2) + "," + (d.y + diameter / 2) + ")";
 				})
